@@ -33,7 +33,7 @@
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge"/>
+          <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword"/>
           <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">搜索</button>
         </form>
       </div>
@@ -45,10 +45,25 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Header",
+  data(){
+    return {
+      keyword: ''
+    }
+  },
   methods:{
     goSearch(){
       //编程式路由跳转
-      this.$router.push('/search')
+      // 声明式参数传递
+      // this.$router.push('/search/'+this.keyword);
+      // 编程式参数传递
+      this.$router.push({name:'/search',
+        params:{keyword: this.keyword},
+        query:{k: this.keyword.toUpperCase()}
+      }, (resolve)=>{
+        console.log(resolve)
+      }, (reject)=>{
+        console.log(reject)
+      })
     }
   }
 
