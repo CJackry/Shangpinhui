@@ -56,7 +56,7 @@ export default {
       // 声明式参数传递
       // this.$router.push('/search/'+this.keyword);
       // 编程式参数传递
-      this.$router.push({name:'/search',
+      this.$router.push({name:'search',
         params:{keyword: this.keyword},
         query:{k: this.keyword.toUpperCase()}
       }, (resolve)=>{
