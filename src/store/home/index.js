@@ -2,20 +2,28 @@
 import {reqCategoryList} from "@/api";
 
 //state: 仓库存储数据的地方
-const state = {};
+const state = {
+    // state中数据默认不能随便写
+    categoryList: []
+};
 //mutations:对仓库数据进行操作的唯一途径
 const mutations = {
-    CATEGORYLIST(){
-        reqCategoryList();
+    CATEGORYLIST(state, categoryList){
+        state.categoryList = categoryList;
     }
 };
 //actions: 处理action，可以书写自己的业务逻辑，也可以处理异步
 const actions = {
     // 由于该请求返回的是一个Promise，要获取Promise成功的数据，要使用async await
     //commit
-    async CategoryList({commit}){
+    async categoryList({commit}){
         let res = await reqCategoryList();
-
+        if(res.code === 200){
+            //传递给mutation中的CATEGORYLIST，注入参数res.data
+            commit('CATEGORYLIST', res.data);
+        }else{
+            console.log(res.code);
+        }
     }
 };
 //getters: 可以理解为计算属性，用于简化仓库数据，让组件获取仓库数据更加方便
