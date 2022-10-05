@@ -160,7 +160,8 @@ export default {
 
     .tab-content {
       border-top: 2px solid #c81623;
-      border-bottom: 1px solid #e4e4e4;
+      border-bottom: 10px solid #e4e4e4;
+      //margin-bottom: 10px;
 
       .tab-pane {
         .floor-1 {
