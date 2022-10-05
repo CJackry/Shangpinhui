@@ -2,7 +2,36 @@
   <!--三级联动-->
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <!--鼠标移出去除一级菜单背景颜色添加到父元素，这样可以应用到所有子元素（因此要移出h2标签才会触发）-->
+      <div @mouseleave="ResetIndex">
+        <h2 class="all">全部商品分类</h2>
+        <div class="sort">
+          <div class="all-sort-list2">
+            <!--动态样式使用:class，其为一个对象，属性为一个样式名，样式名描述使用条件-->
+            <div class="item" v-for="(c1, index) in categoryList.slice(0,15)" :key="c1.categoryId"
+                 @mouseenter="ChangeIndex(index)"
+                 :class="{cur: currentIndex === index}">
+              <h3>
+                <a href="">{{ c1.categoryName }}</a>
+              </h3>
+              <div class="item-list clearfix">
+                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
+                  <dl class="fore">
+                    <dt>
+                      <a href="">{{ c2.categoryName }}</a>
+                    </dt>
+                    <dd>
+                      <em v-for="c3 in c2.categoryChild" :key="c1.categoryId + c2.categoryId + c3.categoryId">
+                        <a href="">{{ c3.categoryName }}</a>
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <nav class="nav">
         <a href="https://www.baidu.com">服装城</a>
         <a href="https://www.baidu.com">美妆馆</a>
@@ -13,42 +42,41 @@
         <a href="https://www.baidu.com">有趣</a>
         <a href="https://www.baidu.com">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2">
-          <div class="item" v-for="c1 in categoryList.slice(0,15)" :key="c1.categoryId">
-            <h3>
-              <a href="">{{ c1.categoryName }}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
-                <dl class="fore">
-                  <dt>
-                    <a href="">{{ c2.categoryName }}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="c3 in c2.categoryChild" :key="c1.categoryId + c2.categoryId + c3.categoryId">
-                      <a href="">{{c3.categoryName}}</a>
-                    </em>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
+
   </div>
 </template>
 
 <script>
 //引入仓库数据
 import {mapState} from 'vuex';
+//引入lodash的throttle来实现节流
+import throttle from 'lodash/throttle';
 
 export default {
   name: "TypeNav",
+  data() {
+    return {
+      // 鼠标当前停留到的菜单索引
+      currentIndex: -1,
+    }
+  },
   mounted() {
     //发送给action categoryList
     this.$store.dispatch("categoryList");
+  },
+  methods: {
+    //js实现鼠标移动改变导航样式（通过三级联动一级菜单的index）
+    // ChangeIndex(index) {
+    //   this.currentIndex = index;
+    // },
+    //加入节流功能的ChangeIndex,throttle回调函数尽量不要用箭头函数,容易出现this问题
+    ChangeIndex: throttle(function (index){
+      this.currentIndex = index;
+    }, 10),
+    ResetIndex() {
+      this.currentIndex = -1;
+    }
   },
   computed: {
     ...mapState({
@@ -177,6 +205,11 @@ export default {
             }
           }
         }
+      }
+
+      //动态样式cur，在HTML标签上使用
+      .cur {
+        background-color: red;
       }
     }
   }
