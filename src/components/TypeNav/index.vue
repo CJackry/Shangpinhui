@@ -8,14 +8,14 @@
         <!--添加过渡动画-->
         <transition name="sort">
           <div class="sort" v-show="navShow">
-            <div class="all-sort-list2">
+            <div class="all-sort-list2" @click="clickNav">
               <!--动态样式使用:class，其为一个对象，属性为一个样式名，样式名描述使用条件-->
               <div class="item" v-for="(c1, index) in categoryList.slice(0,15)" :key="c1.categoryId"
                    @mouseenter="ChangeIndex(index)"
                    :class="{cur: currentIndex === index}">
                 <h3>
                   <!--使用自定义属性来进行标签判断和数据传递-->
-                  <a @click="clickNav">{{ c1.categoryName }}</a>
+                  <a>{{ c1.categoryName }}</a>
                 </h3>
                 <div class="item-list clearfix">
                   <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
