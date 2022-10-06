@@ -58,11 +58,7 @@ export default {
       // 编程式参数传递
       this.$router.push({name:'search',
         params:{keyword: this.keyword},
-        query:{k: this.keyword.toUpperCase()}
-      }, (resolve)=>{
-        console.log(resolve)
-      }, (reject)=>{
-        console.log(reject)
+        query:{}
       })
     }
   }

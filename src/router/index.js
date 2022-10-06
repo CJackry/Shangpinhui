@@ -22,6 +22,18 @@ VueRouter.prototype.push = function (location, resolve, reject) {
         }, () => {
         })
     }
+};
+let OriginReplace = VueRouter.prototype.replace;
+VueRouter.prototype.replace = function (location, resolve, reject) {
+    // 如果resolve和reject都传入了相应函数
+    if (resolve && reject) {
+        // 使用call改变this指向为VueRouter，否则OriginReplace的this是指向window的，细品上边的浅拷贝
+        OriginReplace.call(this, location, resolve, reject);
+    } else {  //如果没有都传入则手动补充一个
+        OriginReplace.call(this, location, () => {
+        }, () => {
+        })
+    }
 }
 
 export default new VueRouter({

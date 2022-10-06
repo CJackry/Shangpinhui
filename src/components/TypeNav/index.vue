@@ -3,34 +3,38 @@
   <div class="type-nav">
     <div class="container">
       <!--鼠标移出去除一级菜单背景颜色添加到父元素，这样可以应用到所有子元素（因此要移出h2标签才会触发）-->
-      <div @mouseleave="ResetIndex">
+      <div @mouseleave="leaveShow" @mouseenter="enterShow">
         <h2 class="all">全部商品分类</h2>
-        <div class="sort">
-          <div class="all-sort-list2">
-            <!--动态样式使用:class，其为一个对象，属性为一个样式名，样式名描述使用条件-->
-            <div class="item" v-for="(c1, index) in categoryList.slice(0,15)" :key="c1.categoryId"
-                 @mouseenter="ChangeIndex(index)"
-                 :class="{cur: currentIndex === index}">
-              <h3>
-                <a href="">{{ c1.categoryName }}</a>
-              </h3>
-              <div class="item-list clearfix">
-                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
-                  <dl class="fore">
-                    <dt>
-                      <a href="">{{ c2.categoryName }}</a>
-                    </dt>
-                    <dd>
-                      <em v-for="c3 in c2.categoryChild" :key="c1.categoryId + c2.categoryId + c3.categoryId">
-                        <a href="">{{ c3.categoryName }}</a>
-                      </em>
-                    </dd>
-                  </dl>
+        <!--添加过渡动画-->
+        <transition name="sort">
+          <div class="sort" v-show="navShow">
+            <div class="all-sort-list2">
+              <!--动态样式使用:class，其为一个对象，属性为一个样式名，样式名描述使用条件-->
+              <div class="item" v-for="(c1, index) in categoryList.slice(0,15)" :key="c1.categoryId"
+                   @mouseenter="ChangeIndex(index)"
+                   :class="{cur: currentIndex === index}">
+                <h3>
+                  <!--使用自定义属性来进行标签判断和数据传递-->
+                  <a @click="clickNav">{{ c1.categoryName }}</a>
+                </h3>
+                <div class="item-list clearfix">
+                  <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
+                    <dl class="fore">
+                      <dt>
+                        <a @click="clickNav">{{ c2.categoryName }}</a>
+                      </dt>
+                      <dd>
+                        <em v-for="c3 in c2.categoryChild" :key="c1.categoryId + c2.categoryId + c3.categoryId">
+                          <a @click="clickNav">{{ c3.categoryName }}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
       <nav class="nav">
         <a href="https://www.baidu.com">服装城</a>
@@ -59,11 +63,12 @@ export default {
     return {
       // 鼠标当前停留到的菜单索引
       currentIndex: -1,
+      navShow: true
     }
   },
   mounted() {
     //发送给action categoryList
-    this.$store.dispatch("categoryList");
+    this.navShow = (this.$route.name === 'home');
   },
   methods: {
     //js实现鼠标移动改变导航样式（通过三级联动一级菜单的index）
@@ -71,11 +76,25 @@ export default {
     //   this.currentIndex = index;
     // },
     //加入节流功能的ChangeIndex,throttle回调函数尽量不要用箭头函数,容易出现this问题
-    ChangeIndex: throttle(function (index){
+    ChangeIndex: throttle(function (index) {
       this.currentIndex = index;
     }, 10),
-    ResetIndex() {
+    leaveShow() {
       this.currentIndex = -1;
+      if (this.$route.name === 'search') {
+        this.navShow = false;
+      }
+    },
+    enterShow() {
+      if (this.$route.name === 'search') {
+        this.navShow = true;
+      }
+    },
+    //菜单点击事件
+    clickNav(e) {
+      console.log(e);
+      if(e.target.nodeName === "a")
+        this.$router.push({name: 'search', params: {navName: e.target.innerHTML}})
     }
   },
   computed: {
@@ -83,7 +102,7 @@ export default {
       //右侧是一个函数名（也是一个计算属性的变量）
       // 当使用这个计算属性时，右侧函数就会立即执行一次并注入一个参数-大仓库中的state（大仓库数据）
       categoryList: state => state.home.categoryList
-    })
+    }),
   }
 }
 </script>
@@ -211,6 +230,38 @@ export default {
       .cur {
         background-color: red;
       }
+
+
+    }
+
+    //nav的过渡动画
+    //过渡动画开始的状态（进入）
+    .sort-enter {
+      height: 0px;
+    }
+
+    //过渡动画结束的状态（进入）
+    .sort-enter-to {
+      height: 461px;
+    }
+
+    //...（离开）
+    .sort-leave {
+      height: 461px;
+    }
+
+    .sort-leave-to {
+      height: 0px;
+    }
+
+    //定义动画时间和速率(进入)
+    .sort-enter-active {
+      transition: all .5s linear;
+    }
+
+    //...（离开）
+    .sort-leave-active {
+      transition: all .5s linear;
     }
   }
 }
