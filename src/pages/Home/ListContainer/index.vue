@@ -6,15 +6,6 @@
         <!--banner轮播-->
         <div class="swiper-container" id="mySwiper">
           <div class="swiper-wrapper">
-            <!--            <div class="swiper-slide">-->
-            <!--              <img src="../../../assets/images/home/banner1.jpg"/>-->
-            <!--            </div>-->
-            <!--            <div class="swiper-slide">-->
-            <!--              <img src="../../../assets/images/home/banner2.jpg"/>-->
-            <!--            </div>-->
-            <!--            <div class="swiper-slide">-->
-            <!--              <img src="../../../assets/images/home/banner3.jpg"/>-->
-            <!--            </div>-->
             <div class="swiper-slide" v-for="carousel in banner" :key="carousel.id">
               <img :src="carousel.imgUrl" />
             </div>
@@ -113,22 +104,37 @@
 <script>
 import {mapState} from "vuex";
 import 'swiper/js/swiper'
+import Swiper from 'swiper'
 
 export default {
   name: "ListContainer",
   computed: {
     ...mapState(
         {
-          banner: state => {
-            // for( let banner of bannerList){
-            //   banner.imgUrl = require(banner.imgUrl);
-            // }
-            return state.home.bannerList;
-          }
+          banner: state => state.home.bannerList
         })
   },
-  mounted() {
+  updated() {
+    var mySwiper = new Swiper ('.swiper', {
+      direction: 'vertical', // 垂直切换选项
+      loop: true, // 循环模式选项
 
+      // 如果需要分页器
+      pagination: {
+        el: '.swiper-pagination',
+      },
+
+      // 如果需要前进后退按钮
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+
+      // 如果需要滚动条
+      scrollbar: {
+        el: '.swiper-scrollbar',
+      },
+    })
   }
 }
 </script>
