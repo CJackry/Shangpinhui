@@ -16,7 +16,7 @@
             <!--              <img src="../../../assets/images/home/banner3.jpg"/>-->
             <!--            </div>-->
             <div class="swiper-slide" v-for="img in banner" :key="img.id">
-              <img src={{img.imgUrl}}/>
+              <img :src='img.imgUrl' />
             </div>
           </div>
           <!-- 如果需要分页器 -->
