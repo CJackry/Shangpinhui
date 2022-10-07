@@ -6,17 +6,17 @@
         <!--banner轮播-->
         <div class="swiper-container" id="mySwiper">
           <div class="swiper-wrapper">
-<!--            <div class="swiper-slide">-->
-<!--              <img src="../../../assets/images/home/banner1.jpg"/>-->
-<!--            </div>-->
-<!--            <div class="swiper-slide">-->
-<!--              <img src="../../../assets/images/home/banner2.jpg"/>-->
-<!--            </div>-->
-<!--            <div class="swiper-slide">-->
-<!--              <img src="../../../assets/images/home/banner3.jpg"/>-->
-<!--            </div>-->
-            <div class="swiper-slide">
-              <img src="../../../assets/images/home/banner4.jpg"/>
+            <!--            <div class="swiper-slide">-->
+            <!--              <img src="../../../assets/images/home/banner1.jpg"/>-->
+            <!--            </div>-->
+            <!--            <div class="swiper-slide">-->
+            <!--              <img src="../../../assets/images/home/banner2.jpg"/>-->
+            <!--            </div>-->
+            <!--            <div class="swiper-slide">-->
+            <!--              <img src="../../../assets/images/home/banner3.jpg"/>-->
+            <!--            </div>-->
+            <div class="swiper-slide" v-for="img in banner" :key="img.id">
+              <img src={{img.imgUrl}}/>
             </div>
           </div>
           <!-- 如果需要分页器 -->
@@ -111,8 +111,16 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
-  name: "ListContainer"
+  name: "ListContainer",
+  computed: {
+    ...mapState(
+        {
+          banner: state => state.home.banner,
+        })
+  }
 }
 </script>
 

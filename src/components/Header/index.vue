@@ -47,7 +47,7 @@ export default {
   name: "Header",
   data(){
     return {
-      keyword: ''
+      keyword: []
     }
   },
   methods:{
@@ -60,6 +60,12 @@ export default {
         params:{keyword: this.keyword},
         query:{}
       })
+    }
+  },
+  mounted() {
+    if(!this.$route.params.keyword){
+      console.log(this.$route.params)
+      this.keyword = this.keyword.append(this.$route.params.keyword);
     }
   }
 

@@ -8,7 +8,7 @@
         <!--添加过渡动画-->
         <transition name="sort">
           <div class="sort" v-show="navShow">
-            <div class="all-sort-list2" @click="clickNav">
+            <div class="all-sort-list2" @click="clickNav($event)">
               <!--动态样式使用:class，其为一个对象，属性为一个样式名，样式名描述使用条件-->
               <div class="item" v-for="(c1, index) in categoryList.slice(0,15)" :key="c1.categoryId"
                    @mouseenter="ChangeIndex(index)"
@@ -21,11 +21,11 @@
                   <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
                     <dl class="fore">
                       <dt>
-                        <a @click="clickNav">{{ c2.categoryName }}</a>
+                        <a >{{ c2.categoryName }}</a>
                       </dt>
                       <dd>
                         <em v-for="c3 in c2.categoryChild" :key="c1.categoryId + c2.categoryId + c3.categoryId">
-                          <a @click="clickNav">{{ c3.categoryName }}</a>
+                          <a>{{ c3.categoryName }}</a>
                         </em>
                       </dd>
                     </dl>
@@ -92,9 +92,8 @@ export default {
     },
     //菜单点击事件
     clickNav(e) {
-      console.log(e);
-      if(e.target.nodeName === "a")
-        this.$router.push({name: 'search', params: {navName: e.target.innerHTML}})
+      if(e.target.nodeName === "A")
+        this.$router.push({name: 'search', params: {keyword: e.target.innerHTML}})
     }
   },
   computed: {

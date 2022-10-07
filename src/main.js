@@ -14,6 +14,9 @@ import store from "@/store";
 // import {reqCategoryList} from "@/api";
 // reqCategoryList();
 
+// 引入mock模块直接执行
+import "@/mock/mockServe";
+
 new Vue({
     render: h => h(App),
     //注册路由

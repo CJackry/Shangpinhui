@@ -6,3 +6,4 @@ import requests from "@/api/request";
 
 //axios发送请求返回结果Promise对象
 export const reqCategoryList = () => requests({url: '/product/getBaseCategoryList', method: 'get'});
+export const reqBanner = () => requests({url: '/mock/banner', methods: 'get'});

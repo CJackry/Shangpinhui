@@ -48,6 +48,7 @@
               <a href="#">全部结果</a>
             </li>
           </ul>
+          <!--搜索的关键字高亮标签-->
           <ul class="fl sui-tag">
             <li class="with-x">手机</li>
             <li class="with-x">iphone<i>×</i></li>
