@@ -16,6 +16,8 @@ import store from "@/store";
 
 // 引入mock模块直接执行
 import "@/mock/mockServe";
+// 引入swiper样式
+import 'swiper/css/swiper.css'
 
 new Vue({
     render: h => h(App),

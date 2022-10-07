@@ -15,8 +15,8 @@
             <!--            <div class="swiper-slide">-->
             <!--              <img src="../../../assets/images/home/banner3.jpg"/>-->
             <!--            </div>-->
-            <div class="swiper-slide" v-for="img in banner" :key="img.id">
-              <img :src='img.imgUrl' />
+            <div class="swiper-slide" v-for="carousel in banner" :key="carousel.id">
+              <img :src="carousel.imgUrl" />
             </div>
           </div>
           <!-- 如果需要分页器 -->
@@ -112,14 +112,23 @@
 
 <script>
 import {mapState} from "vuex";
+import 'swiper/js/swiper'
 
 export default {
   name: "ListContainer",
   computed: {
     ...mapState(
         {
-          banner: state => state.home.banner,
+          banner: state => {
+            // for( let banner of bannerList){
+            //   banner.imgUrl = require(banner.imgUrl);
+            // }
+            return state.home.bannerList;
+          }
         })
+  },
+  mounted() {
+
   }
 }
 </script>

@@ -65,7 +65,7 @@ export default {
   mounted() {
     if(!this.$route.params.keyword){
       console.log(this.$route.params)
-      this.keyword = this.keyword.append(this.$route.params.keyword);
+      this.keyword = this.keyword.push(this.$route.params.keyword);
     }
   }
 
