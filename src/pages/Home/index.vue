@@ -18,7 +18,6 @@ import like from "@/pages/Home/like";
 import floor from "@/pages/Home/floor";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
   name: "Home",
   components: {
     ListContainer,
