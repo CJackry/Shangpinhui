@@ -22,19 +22,8 @@
               <img :src=list.imgUrl />
             </div>
             <div class="floorBanner">
-              <div class="swiper-container" ref="Swiper">
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide" v-for="carousel in list.carouselList" :key="carousel.id" ref="carousel">
-                    <img :src=carousel.imgUrl>
-                  </div>
-                </div>
-                <!-- 如果需要分页器 -->
-                <div class="swiper-pagination"></div>
-
-                <!-- 如果需要导航按钮 -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-              </div>
+              <!--轮播图组件-->
+              <Carousel :list="list.carouselList" />
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
@@ -66,37 +55,36 @@
 
 <script>
 //千万别忘了引入Swiper，否则实例化Swiper会究极报错！！！
-import Swiper from "swiper";
-
+// import Swiper from "swiper";/
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "floor",
   props: ['list'],
   mounted() {
-    //这里可以直接写在mounted是因为floor的数据时父组件home给的，因此mounted的时候（在加载的时候）已经拿到所需的动态数据了
-    //使用ref来对轮播图组件进行定位
-    // eslint-disable-next-line no-unused-vars
-    let mySwiper = new Swiper(this.$refs.Swiper, {
-      // observer: true,
-      direction: 'horizontal', // 垂直切换选项 vertical
-      loop: true, // 循环模式选项
-
-      // 如果需要分页器
-      pagination: {
-        el: '.swiper-pagination',
-      },
-
-      // 如果需要前进后退按钮
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-
-      // 如果需要滚动条
-      scrollbar: {
-        el: '.swiper-scrollbar',
-      },
-    });
+    // //这里可以直接写在mounted是因为floor的数据时父组件home给的，因此mounted的时候（在加载的时候）已经拿到所需的动态数据了
+    // //使用ref来对轮播图组件进行定位
+    // // eslint-disable-next-line no-unused-vars
+    // let mySwiper = new Swiper(this.$refs.Swiper, {
+    //   // observer: true,
+    //   direction: 'horizontal', // 垂直切换选项 vertical
+    //   loop: true, // 循环模式选项
+    //
+    //   // 如果需要分页器
+    //   pagination: {
+    //     el: '.swiper-pagination',
+    //   },
+    //
+    //   // 如果需要前进后退按钮
+    //   navigation: {
+    //     nextEl: '.swiper-button-next',
+    //     prevEl: '.swiper-button-prev',
+    //   },
+    //
+    //   // 如果需要滚动条
+    //   scrollbar: {
+    //     el: '.swiper-scrollbar',
+    //   },
+    // });
   }
 }
 </script>

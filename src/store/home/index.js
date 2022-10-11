@@ -25,7 +25,7 @@ const mutations = {
 const actions = {
     // 由于该请求返回的是一个Promise，要获取Promise成功的数据，要使用async await
     //commit
-    async getcategoryList({commit}){
+    async getCategoryList({commit}){
         let res = await reqCategoryList();
         if(res.code === 200){
             //传递给mutation中的CATEGORYLIST，注入参数res.data
@@ -34,7 +34,7 @@ const actions = {
             console.log(res.code);
         }
     },
-    async getbannerList({commit}){
+    async getBannerList({commit}){
         let res = await reqBannerList();
         if(res.code === 200){
             //传递给mutation中的CATEGORYLIST，注入参数res.data
@@ -43,7 +43,7 @@ const actions = {
             console.log(res.code);
         }
     },
-    async getfloorList({commit}){
+    async getFloorList({commit}){
         let res = await reqFloorList();
         if(res.code === 200){
             commit('GETFLOORLIST', res.data);

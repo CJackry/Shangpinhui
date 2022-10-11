@@ -4,19 +4,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" id="mySwiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="carousel in banner" :key="carousel.id">
-              <img :src="carousel.imgUrl" :alt=carousel.id />
-            </div>
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :list="banner" />
       </div>
       <div class="right">
         <div class="news">
@@ -103,7 +91,6 @@
 
 <script>
 import {mapState} from "vuex";
-import Swiper from 'swiper'
 
 export default {
   name: "ListContainer",
@@ -115,40 +102,40 @@ export default {
   },
   watch: {
     //监听数据变化
-    banner:{
-      // eslint-disable-next-line no-unused-vars
-      handler(newValue, oldValue){
-        //当banner数组发生数据变化的时候执行handler函数体
-        //当handler函数执行时只能保证banner数据发生了变化，但是不能保证v-for完成是否执行完了
-        //使用nextTick: 在下次DOM更新，循环结束（执行完v-for等）之后，修改数据之后立即使用该方法，获取更新后的DOM
-        //即nextTick执行时，DOM的v-for循环执行完毕了、动态数据也已经全部加载完毕
-        this.$nextTick(()=>{
-          //创建mySwiper实例时Swiper组件必须完整，且其中的所有数据必须已经加载完毕
-          // eslint-disable-next-line no-unused-vars
-          let mySwiper = new Swiper('.swiper-container', {
-            // observer: true,
-            direction: 'horizontal', // 垂直切换选项 vertical
-            loop: true, // 循环模式选项
-
-            // 如果需要分页器
-            pagination: {
-              el: '.swiper-pagination',
-            },
-
-            // 如果需要前进后退按钮
-            navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev',
-            },
-
-            // 如果需要滚动条
-            scrollbar: {
-              el: '.swiper-scrollbar',
-            },
-          });
-        })
-      }
-    }
+    // banner:{
+    //   // eslint-disable-next-line no-unused-vars
+    //   handler(newValue, oldValue){
+    //     //当banner数组发生数据变化的时候执行handler函数体
+    //     //当handler函数执行时只能保证banner数据发生了变化，但是不能保证v-for完成是否执行完了
+    //     //使用nextTick: 在下次DOM更新，循环结束（执行完v-for等）之后，修改数据之后立即使用该方法，获取更新后的DOM
+    //     //即nextTick执行时，DOM的v-for循环执行完毕了、动态数据也已经全部加载完毕
+    //     this.$nextTick(()=>{
+    //       //创建mySwiper实例时Swiper组件必须完整，且其中的所有数据必须已经加载完毕
+    //       // eslint-disable-next-line no-unused-vars
+    //       let mySwiper = new Swiper('.swiper-container', {
+    //         // observer: true,
+    //         direction: 'horizontal', // 垂直切换选项 vertical
+    //         loop: true, // 循环模式选项
+    //
+    //         // 如果需要分页器
+    //         pagination: {
+    //           el: '.swiper-pagination',
+    //         },
+    //
+    //         // 如果需要前进后退按钮
+    //         navigation: {
+    //           nextEl: '.swiper-button-next',
+    //           prevEl: '.swiper-button-prev',
+    //         },
+    //
+    //         // 如果需要滚动条
+    //         scrollbar: {
+    //           el: '.swiper-scrollbar',
+    //         },
+    //       });
+    //     })
+    //   }
+    // }
   },
   mounted() {
     //mounted完成时动态数据并未加载完所以轮播图组件没用
