@@ -16,7 +16,7 @@ import store from "@/store";
 
 // 引入mock模块直接执行
 import "@/mock/mockServe";
-// 引入swiper样式
+// 引入swiper样式(全局引入则各组件使用的时候不需要再进行引入)
 import 'swiper/js/swiper'
 import 'swiper/css/swiper.css'
 

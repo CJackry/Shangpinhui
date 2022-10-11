@@ -3,29 +3,11 @@
   <div class="floor">
     <div class="py-container">
       <div class="title clearfix">
-        <h3 class="fl">家用电器</h3>
+        <h3 class="fl">{{ list.name }}</h3>
         <div class="fr">
-          <ul class="nav-tabs clearfix">
+          <ul class="nav-tabs clearfix" v-for="(navList, index) in list.navList" :key="index">
             <li class="active">
-              <a href="#tab1" data-toggle="tab">热门</a>
-            </li>
-            <li>
-              <a href="#tab2" data-toggle="tab">大家电</a>
-            </li>
-            <li>
-              <a href="#tab3" data-toggle="tab">生活电器</a>
-            </li>
-            <li>
-              <a href="#tab4" data-toggle="tab">厨房电器</a>
-            </li>
-            <li>
-              <a href="#tab5" data-toggle="tab">应季电器</a>
-            </li>
-            <li>
-              <a href="#tab6" data-toggle="tab">空气/净水</a>
-            </li>
-            <li>
-              <a href="#tab7" data-toggle="tab">高端电器</a>
+              <a :href=navList.url data-toggle="tab">{{ navList.text }}</a>
             </li>
           </ul>
         </div>
@@ -35,27 +17,16 @@
           <div class="floor-1">
             <div class="blockgary">
               <ul class="jd-list">
-                <li>节能补贴</li>
-                <li>4K电视</li>
-                <li>空气净化器</li>
-                <li>IH电饭煲</li>
-                <li>滚筒洗衣机</li>
-                <li>电热水器</li>
+                <li v-for="(keyword, index) in list.keywords" :key="index">{{ keyword }}</li>
               </ul>
-              <img src="../../../assets/images/home/floor-1-1.png"/>
+              <img :src=list.imgUrl />
             </div>
             <div class="floorBanner">
-              <div class="swiper-container" id="floor1Swiper">
+              <div class="swiper-container" ref="Swiper">
                 <div class="swiper-wrapper">
-                  <div class="swiper-slide">
-                    <img src="../../../assets/images/home/floor-1-b01.png">
+                  <div class="swiper-slide" v-for="carousel in list.carouselList" :key="carousel.id" ref="carousel">
+                    <img :src=carousel.imgUrl>
                   </div>
-<!--                  <div class="swiper-slide">-->
-<!--                    <img src="../../../assets/images/home/floor-1-b02.png">-->
-<!--                  </div>-->
-<!--                  <div class="swiper-slide">-->
-<!--                    <img src="../../../assets/images/home/floor-1-b03.png">-->
-<!--                  </div>-->
                 </div>
                 <!-- 如果需要分页器 -->
                 <div class="swiper-pagination"></div>
@@ -68,22 +39,22 @@
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
-                <img src="../../../assets/images/home/floor-1-2.png"/>
+                <img :src=list.recommendList[0] />
               </div>
               <div class="floor-conver-pit">
-                <img src="../../../assets/images/home/floor-1-3.png"/>
+                <img :src=list.recommendList[1] />
               </div>
             </div>
             <div class="split center">
-              <img src="../../../assets/images/home/floor-1-4.png"/>
+              <img :src=list.bigImg />
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
-                <img src="../../../assets/images/home/floor-1-5.png"/>
+                <img :src=list.recommendList[2] />
               </div>
               <div class="floor-conver-pit">
-                <img src="../../../assets/images/home/floor-1-6.png"/>
+                <img :src=list.recommendList[3] />
               </div>
             </div>
           </div>
@@ -94,9 +65,39 @@
 </template>
 
 <script>
+//千万别忘了引入Swiper，否则实例化Swiper会究极报错！！！
+import Swiper from "swiper";
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "floor"
+  name: "floor",
+  props: ['list'],
+  mounted() {
+    //这里可以直接写在mounted是因为floor的数据时父组件home给的，因此mounted的时候（在加载的时候）已经拿到所需的动态数据了
+    //使用ref来对轮播图组件进行定位
+    // eslint-disable-next-line no-unused-vars
+    let mySwiper = new Swiper(this.$refs.Swiper, {
+      // observer: true,
+      direction: 'horizontal', // 垂直切换选项 vertical
+      loop: true, // 循环模式选项
+
+      // 如果需要分页器
+      pagination: {
+        el: '.swiper-pagination',
+      },
+
+      // 如果需要前进后退按钮
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+
+      // 如果需要滚动条
+      scrollbar: {
+        el: '.swiper-scrollbar',
+      },
+    });
+  }
 }
 </script>
 

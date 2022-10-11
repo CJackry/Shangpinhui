@@ -10,3 +10,4 @@ import mockRequests from './mockAjax';
 export const reqCategoryList = () => requests({url: '/product/getBaseCategoryList', method: 'get'});
 //通过mock获取生成的轮播图数据
 export const reqBannerList = () => mockRequests.get('/banner');
+export const reqFloorList = () => mockRequests.get('/floor')
