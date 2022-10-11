@@ -15,17 +15,21 @@
                    :class="{cur: currentIndex === index}">
                 <h3>
                   <!--使用自定义属性来进行标签判断和数据传递-->
-                  <a>{{ c1.categoryName }}</a>
+                  <a :data-category1Id="c1.categoryId" :data-categoryName="c1.categoryName">{{ c1.categoryName }}</a>
                 </h3>
                 <div class="item-list clearfix">
-                  <div class="subitem" v-for="c2 in c1.categoryChild" :key="c1.categoryId + c2.categoryId">
+                  <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
                     <dl class="fore">
                       <dt>
-                        <a >{{ c2.categoryName }}</a>
+                        <a :data-category2Id="c2.categoryId" :data-categoryName="c2.categoryName">{{
+                            c2.categoryName
+                          }}</a>
                       </dt>
                       <dd>
-                        <em v-for="c3 in c2.categoryChild" :key="c1.categoryId + c2.categoryId + c3.categoryId">
-                          <a>{{ c3.categoryName }}</a>
+                        <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                          <a :data-category3Id="c3.categoryId" :data-categoryName="c3.categoryName">{{
+                              c3.categoryName
+                            }}</a>
                         </em>
                       </dd>
                     </dl>
@@ -63,7 +67,7 @@ export default {
     return {
       // 鼠标当前停留到的菜单索引
       currentIndex: -1,
-      navShow: true
+      navShow: true,
     }
   },
   mounted() {
@@ -92,8 +96,17 @@ export default {
     },
     //菜单点击事件
     clickNav(e) {
-      if(e.target.nodeName === "A")
-        this.$router.push({name: 'search', params: {keyword: e.target.innerHTML}})
+      if (e.target.nodeName === "A") {
+        this.$router.push({
+          name: 'search', params: {
+            keyword: e.target.innerHTML,
+            category1Id: e.target.dataset.category1Id,
+            category2Id: e.target.dataset.category2Id,
+            category3Id: e.target.dataset.category3Id,
+            categoryName: e.target.dataset.categoryName
+          }
+        })
+      }
     }
   },
   computed: {
