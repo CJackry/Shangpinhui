@@ -20,7 +20,7 @@
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector/>
 
         <!--details-->
         <div class="details clearfix">
@@ -62,7 +62,7 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a target="_blank" href="item.html" :title="good.title"></a>
+                    <a target="_blank" href="item.html" title="就这">{{good.title}}</a>
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>
@@ -119,8 +119,43 @@
     components: {
       SearchSelector
     },
+    data(){
+      return{
+        searchParams: {
+          //一级菜单
+          "category1Id": "",
+          //二级菜单
+          "category2Id": "",
+          //三级菜单
+          "category3Id": "",
+          //分类名
+          "categoryName": "",
+          //搜索关键字
+          "keyword": "",
+          //排序方式：1综合2价格（asc升，desc降，如1:desc）
+          "order": "",
+          //页码，初始必为1
+          "pageNo": 1,
+          //每页数量
+          "pageSize": 10,
+          //商品属性
+          "props": [],
+          //品牌（ID: 名称）
+          "trademark": ""
+        }
+      }
+    },
+    beforeMount() {
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
+      console.log(this.searchParams);
+    },
     mounted() {
-      this.$store.dispatch('getSearchList');
+      this.getData(this.searchParams);
+    },
+    methods:{
+      getData(params) {
+        this.$store.dispatch('getSearchList', params);
+      }
     },
     computed:{
       ...mapState({

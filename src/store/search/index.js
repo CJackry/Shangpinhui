@@ -18,6 +18,7 @@ const actions = {
         //带参数的POST请求，所以params至少要是个空对象
         let res = await reqSearchList(params);
         if(res.code === 200){
+            console.log("params:", params, res.data);
             commit('GETSEARCHLIST', res.data);
         }else{
             console.log(res.code);
@@ -25,7 +26,17 @@ const actions = {
     }
 };
 //getters: 可以理解为计算属性，用于简化仓库数据，让组件获取仓库数据更加方便
-const getters = {}
+const getters = {
+    goodsList(state){
+        return state.SearchList.goodsList||[];
+    },
+    trademarkList(state){
+        return state.SearchList.trademarkList||[];
+    },
+    attrsList(state){
+        return state.SearchList.attrsList||[];
+    }
+}
 export default {
     state,
     mutations,

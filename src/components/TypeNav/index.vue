@@ -21,9 +21,8 @@
                   <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
                     <dl class="fore">
                       <dt>
-                        <a :data-category2Id="c2.categoryId" :data-categoryName="c2.categoryName">{{
-                            c2.categoryName
-                          }}</a>
+                        <a :data-category2Id="c2.categoryId"
+                           :data-categoryName="c2.categoryName">{{c2.categoryName}}</a>
                       </dt>
                       <dd>
                         <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
@@ -96,17 +95,29 @@ export default {
     },
     //菜单点击事件
     clickNav(e) {
-      if (e.target.nodeName === "A") {
-        this.$router.push({
-          name: 'search', params: {
-            keyword: e.target.innerHTML,
-            category1Id: e.target.dataset.category1Id,
-            category2Id: e.target.dataset.category2Id,
-            category3Id: e.target.dataset.category3Id,
-            categoryName: e.target.dataset.categoryName
+        let {
+          //要注意自定义属性在渲染后名称会全都变成小写，所以e.target.dataset里保存的属性名是全小写
+          category1id,
+          category2id,
+          category3id,
+          categoryname
+        } = e.target.dataset;
+        // console.log(e.target.dataset);
+        if(categoryname){
+          let location = {name: 'search'};
+          let query = {categoryName: categoryname}
+          if(category1id){
+            query.category1Id = category1id;
+          }else if(category2id){
+            query.category2Id = category2id;
+          }else if(category3id){
+            query.category3Id = category3id;
           }
-        })
-      }
+          if(this.$route.params)
+            location.params = this.$route.params;
+          location.query = query;
+          this.$router.push(location);
+        }
     }
   },
   computed: {
@@ -257,24 +268,24 @@ export default {
       height: 461px;
     }
 
-    //...（离开）
-    .sort-leave {
-      height: 461px;
-    }
-
-    .sort-leave-to {
-      height: 0px;
-    }
+    ////...（离开）
+    //.sort-leave {
+    //  height: 461px;
+    //}
+    //
+    //.sort-leave-to {
+    //  height: 0px;
+    //}
 
     //定义动画时间和速率(进入)
     .sort-enter-active {
       transition: all .5s linear;
     }
 
-    //...（离开）
-    .sort-leave-active {
-      transition: all .5s linear;
-    }
+    ////...（离开）
+    //.sort-leave-active {
+    //  transition: all .5s linear;
+    //}
   }
 }
 </style>
