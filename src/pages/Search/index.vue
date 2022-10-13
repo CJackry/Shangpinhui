@@ -161,6 +161,18 @@
       ...mapState({
         SearchList: state => state.search.SearchList,
       })
+    },
+    watch:{
+      // 监听路由变化，当路由的参数变化的时候对搜索页面进行重新获取数据
+      $route(){
+        //合并参数，直接将路由里的参数对searchParams进行覆盖（因此categoryName一定会被重新赋值）
+        Object.assign(this.searchParams, this.$route.params, this.$route.query);
+        this.getData(this.searchParams);
+        //跳转完后要把原来的searchParams中的菜单id清空，以防下次点击的时候出现上次的id信息
+        this.searchParams.category1Id = '';
+        this.searchParams.category2Id = '';
+        this.searchParams.category3Id = '';
+      }
     }
   }
 </script>
