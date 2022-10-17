@@ -12,10 +12,8 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-if="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeBreadName('categoryName')">×</i></li>
+            <li class="with-x" v-if="searchParams.keyword">{{searchParams.keyword}}<i @click="removeBreadName('keyword')">×</i></li>
           </ul>
         </div>
 
@@ -155,6 +153,27 @@
     methods:{
       getData(params) {
         this.$store.dispatch('getSearchList', params);
+      },
+      //重置搜索的参数，设置为undefind则不会携带发送请求，提高性能
+      resetSearchParams(...res){
+        for(let attr of res){
+          this.searchParams[attr] = undefined;
+        }
+      },
+      //移除面包屑
+      removeBreadName(breadName){
+        //如果是分类名则要把名字和分类id都移除
+        if(breadName === 'categoryName'){
+          this.resetSearchParams("categoryName", "category1Id", "category2Id", "category3Id");
+        }else{
+          this.resetSearchParams(breadName);
+        }
+        //移除面包屑之后对自身进行重新跳转
+        if(this.$route.params){
+          this.$router.push({name: 'search', params: this.$route.params});
+        }else{
+          this.$router.push({name: 'search'});
+        }
       }
     },
     computed:{
