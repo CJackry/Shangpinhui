@@ -14,11 +14,12 @@
           <ul class="fl sui-tag">
             <li class="with-x" v-if="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeBreadName('categoryName')">×</i></li>
             <li class="with-x" v-if="searchParams.keyword">{{searchParams.keyword}}<i @click="removeBreadName('keyword')">×</i></li>
+            <li class="with-x" v-if="searchParams.trademark">{{searchParams.trademark.split(':')[1]}}<i >x</i></li>
           </ul>
         </div>
 
-        <!--selector-->
-        <SearchSelector/>
+        <!--selector 自定义事件不需要加括号，只需要写回调函数名，否则接收不到参数-->
+        <SearchSelector @trademarkInfo="trademarkInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -148,11 +149,11 @@
       console.log(this.searchParams);
     },
     mounted() {
-      this.getData(this.searchParams);
+      this.getData();
     },
     methods:{
-      getData(params) {
-        this.$store.dispatch('getSearchList', params);
+      getData() {
+        this.$store.dispatch('getSearchList', this.searchParams);
       },
       //重置搜索的参数，设置为undefind则不会携带发送请求，提高性能
       resetSearchParams(...res){
@@ -174,6 +175,13 @@
         }else{
           this.$router.push({name: 'search'});
         }
+      },
+      //自定义事件回调
+      trademarkInfo(brand){
+        console.log('brandInfo: ', brand);
+        this.searchParams.trademark = `${brand.tmId}:${brand.tmName}`;
+        this.getData();
+        // this.$router.push({name: 'search', params: this.$route.params});
       }
     },
     computed:{
@@ -186,7 +194,7 @@
       $route(){
         //合并参数，直接将路由里的参数对searchParams进行覆盖（因此categoryName一定会被重新赋值）
         Object.assign(this.searchParams, this.$route.params, this.$route.query);
-        this.getData(this.searchParams);
+        this.getData();
         //跳转完后要把原来的searchParams中的菜单id清空，以防下次点击的时候出现上次的id信息
         this.searchParams.category1Id = '';
         this.searchParams.category2Id = '';
