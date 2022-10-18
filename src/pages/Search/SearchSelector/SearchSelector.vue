@@ -16,7 +16,7 @@
       <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue, index) in attr.attrValueList" :key="index">
+          <li v-for="(attrValue, index) in attr.attrValueList" :key="index" @click="attrHandler(attr, attrValue)">
             <a>{{ attrValue }}</a>
           </li>
         </ul>
@@ -36,9 +36,13 @@ export default {
   },
   methods:{
     trademarkHandler(brand){
-      console.log(brand);
+      // console.log(brand);
       //子传父用自定义事件，使用$emit对父组件传递自定义事件的名称和参数，父组件在子组件使用的地方(如<SearchSelector>)添加自定义事件
       this.$emit("trademarkInfo", brand);
+    },
+    attrHandler(attr, attrValue){
+      // console.log(attr, attrValue);
+      this.$emit('attrInfo', attr, attrValue);
     }
   }
 }
