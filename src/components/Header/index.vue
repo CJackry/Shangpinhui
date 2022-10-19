@@ -34,7 +34,7 @@
       <div class="searchArea">
         <form @action=goSearch class="searchForm">
           <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword"/>
-          <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">搜索</button>
+          <button class="sui-btn btn-xlarge btn-danger" type="button" @click.prevent="goSearch">搜索</button>
         </form>
       </div>
     </div>
@@ -55,10 +55,7 @@ export default {
       // 声明式参数传递
       // this.$router.push('/search/'+this.keyword);
       // 编程式参数传递
-      this.$router.push({name:'search',
-        params:{keyword: this.keyword},
-        query:{}
-      })
+      this.$router.push({name:'search', params:{keyword: this.keyword}})
     }
   },
 

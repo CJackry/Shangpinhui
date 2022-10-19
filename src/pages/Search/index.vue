@@ -70,35 +70,7 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共{{ SearchList.totalPages }}页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination :pageNo="pageNo" :pageSize="pageSize" :continues="continues" :totalNum="totalNum" />
         </div>
       </div>
     </div>
@@ -137,12 +109,15 @@ export default {
         "props": [],
         //品牌（ID: 名称）
         "trademark": ""
-      }
+      },
+      pageNo: 10,
+      pageSize: 3,
+      continues: 5,
+      totalNum: 91
     }
   },
   beforeMount() {
     Object.assign(this.searchParams, this.$route.query, this.$route.params);
-    console.log(this.searchParams);
   },
   mounted() {
     this.getData();
@@ -179,7 +154,6 @@ export default {
     },
     //自定义事件回调
     trademarkInfo(brand) {
-      // console.log('brandInfo: ', brand);
       //ES6模板字符串
       this.searchParams.trademark = `${brand.tmId}:${brand.tmName}`;
       this.getData();
@@ -204,10 +178,8 @@ export default {
     },
     //排序的点击事件
     changeOrder(choice){
-      console.log("Choice: ", choice);
       let origin = this.searchParams.order;
       let originChoice = origin.split(":")[0];
-      console.log("originChoice: ", originChoice);
       if(originChoice === choice) {
         if (this.isAsc()) this.searchParams.order = `${choice}:desc`;
         else this.searchParams.order = `${choice}:asc`;

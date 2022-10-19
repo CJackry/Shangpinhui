@@ -15,7 +15,7 @@ export default {
   name: 'App',
   components: {
     Header,
-    Footer
+    Footer,
   },
   //app组件的mounted只会执行一次，因为只会渲染一次
   mounted() {

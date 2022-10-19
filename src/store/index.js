@@ -7,10 +7,6 @@ Vue.use(Vuex);
 import home from './home';
 import search from './search';
 
-const state = {
-    keywords: '',
-}
-
 //对外暴露Store类的一个实例
 export default new Vuex.Store({
     // state,
@@ -22,5 +18,4 @@ export default new Vuex.Store({
         home,
         search
     },
-    state
 })

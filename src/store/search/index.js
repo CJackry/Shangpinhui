@@ -18,7 +18,6 @@ const actions = {
         //带参数的POST请求，所以params至少要是个空对象
         let res = await reqSearchList(params);
         if(res.code === 200){
-            console.log("params:", params, res.data);
             commit('GETSEARCHLIST', res.data);
         }else{
             console.log(res.code);
