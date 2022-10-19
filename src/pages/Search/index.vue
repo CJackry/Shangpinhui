@@ -18,104 +18,91 @@
                 @click="removeBreadName('keyword')">×</i></li>
             <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(':')[1] }}<i
                 @click="removeBreadName('trademark')">×</i></li>
-            <div  v-if="searchParams.props">
-              <li class="with-x" v-for="(prop, index) in searchParams.props" :key="index">{{ prop.split(':')[1] }}<i
-                  @click="removeBreadName('props')">×</i></li>
-            </div>
-
+            <li class="with-x" v-for="(prop, index) in searchParams.props" :key="index">{{ prop.split(':')[1] }}<i
+                @click="removeAttr(index)">×</i></li>
           </ul>
         </div>
 
         <!--selector 自定义事件不需要加括号，只需要写回调函数名，否则接收不到参数-->
         <SearchSelector @trademarkInfo=" trademarkInfo" @attrInfo="attrInfo"/>
 
-              <!--details-->
-              <div class="details clearfix">
-                <div class="sui-navbar">
-                  <div class="navbar-inner filter">
-                    <ul class="sui-nav">
-                      <li class="active">
-                        <a href="#">综合</a>
-                      </li>
-                      <li>
-                        <a href="#">销量</a>
-                      </li>
-                      <li>
-                        <a href="#">新品</a>
-                      </li>
-                      <li>
-                        <a href="#">评价</a>
-                      </li>
-                      <li>
-                        <a href="#">价格⬆</a>
-                      </li>
-                      <li>
-                        <a href="#">价格⬇</a>
-                      </li>
-                    </ul>
+        <!--details-->
+        <div class="details clearfix">
+          <div class="sui-navbar">
+            <div class="navbar-inner filter">
+              <ul class="sui-nav">
+                <li :class="{'active': isActive(1)}" @click="changeOrder('1')">
+                  <a>综合<span v-show="isActive(1)" class="iconfont"
+                               :class="{'icon-down': !isAsc(), 'icon-up': isAsc()}"></span></a>
+                </li>
+                <li :class="{'active': isActive(2)}" @click="changeOrder('2')">
+                  <a>价格<span v-show="isActive(2)" class="iconfont"
+                               :class="{'icon-down': !isAsc(), 'icon-up': isAsc()}"></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="goods-list">
+            <ul class="yui3-g">
+              <li class="yui3-u-1-5" v-for="good in SearchList.goodsList" :key="good.id">
+                <div class="list-wrap">
+                  <div class="p-img">
+                    <a href="item.html" target="_blank"><img :src=good.defaultImg /></a>
+                  </div>
+                  <div class="price">
+                    <strong>
+                      <em style="margin-right: 10px">¥</em>
+                      <i>{{ good.price }}</i>
+                    </strong>
+                  </div>
+                  <div class="attr">
+                    <a target="_blank" href="item.html" title="就这">{{ good.title }}</a>
+                  </div>
+                  <div class="commit">
+                    <i class="command">已有<span>2000</span>人评价</i>
+                  </div>
+                  <div class="operate">
+                    <a href="success-cart.html" target="_blank"
+                       class="sui-btn btn-bordered btn-danger">加入购物车</a>
+                    <a href="javascript:void(0);" class="sui-btn btn-bordered">收藏</a>
                   </div>
                 </div>
-                <div class="goods-list">
-                  <ul class="yui3-g">
-                    <li class="yui3-u-1-5" v-for="good in SearchList.goodsList" :key="good.id">
-                      <div class="list-wrap">
-                        <div class="p-img">
-                          <a href="item.html" target="_blank"><img :src=good.defaultImg /></a>
-                        </div>
-                        <div class="price">
-                          <strong>
-                            <em style="margin-right: 10px">¥</em>
-                            <i>{{ good.price }}</i>
-                          </strong>
-                        </div>
-                        <div class="attr">
-                          <a target="_blank" href="item.html" title="就这">{{ good.title }}</a>
-                        </div>
-                        <div class="commit">
-                          <i class="command">已有<span>2000</span>人评价</i>
-                        </div>
-                        <div class="operate">
-                          <a href="success-cart.html" target="_blank"
-                             class="sui-btn btn-bordered btn-danger">加入购物车</a>
-                          <a href="javascript:void(0);" class="sui-btn btn-bordered">收藏</a>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="fr page">
-                  <div class="sui-pagination clearfix">
-                    <ul>
-                      <li class="prev disabled">
-                        <a href="#">«上一页</a>
-                      </li>
-                      <li class="active">
-                        <a href="#">1</a>
-                      </li>
-                      <li>
-                        <a href="#">2</a>
-                      </li>
-                      <li>
-                        <a href="#">3</a>
-                      </li>
-                      <li>
-                        <a href="#">4</a>
-                      </li>
-                      <li>
-                        <a href="#">5</a>
-                      </li>
-                      <li class="dotted"><span>...</span></li>
-                      <li class="next">
-                        <a href="#">下一页»</a>
-                      </li>
-                    </ul>
-                    <div><span>共{{ SearchList.totalPages }}页&nbsp;</span></div>
-                  </div>
-                </div>
-              </div>
+              </li>
+            </ul>
+          </div>
+          <div class="fr page">
+            <div class="sui-pagination clearfix">
+              <ul>
+                <li class="prev disabled">
+                  <a href="#">«上一页</a>
+                </li>
+                <li class="active">
+                  <a href="#">1</a>
+                </li>
+                <li>
+                  <a href="#">2</a>
+                </li>
+                <li>
+                  <a href="#">3</a>
+                </li>
+                <li>
+                  <a href="#">4</a>
+                </li>
+                <li>
+                  <a href="#">5</a>
+                </li>
+                <li class="dotted"><span>...</span></li>
+                <li class="next">
+                  <a href="#">下一页»</a>
+                </li>
+              </ul>
+              <div><span>共{{ SearchList.totalPages }}页&nbsp;</span></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -140,8 +127,8 @@ export default {
         "categoryName": "",
         //搜索关键字
         "keyword": "",
-        //排序方式：1综合2价格（asc升，desc降，如1:desc）
-        "order": "",
+        //排序方式：1综合2价格（asc升，desc降，如1:desc），默认为综合降序
+        "order": "1:desc",
         //页码，初始必为1
         "pageNo": 1,
         //每页数量
@@ -185,6 +172,11 @@ export default {
         this.$router.push({name: 'search'});
       }
     },
+    //移除属性参数需要使用索引，并重新发起请求，因此另写一个移除方法
+    removeAttr(index) {
+      this.searchParams.props.splice(index, 1);
+      this.getData();
+    },
     //自定义事件回调
     trademarkInfo(brand) {
       // console.log('brandInfo: ', brand);
@@ -192,9 +184,37 @@ export default {
       this.searchParams.trademark = `${brand.tmId}:${brand.tmName}`;
       this.getData();
     },
-    attrInfo(attr, attrValue){
+    attrInfo(attr, attrValue) {
       let prop = `${attr.attrId}:${attrValue}:${attr.attrName}`;
-      this.searchParams.props.push(prop);
+      if (this.searchParams.props.indexOf(prop) === -1) {
+        this.searchParams.props.push(prop);
+        this.getData();
+      }
+    },
+    //排序
+    //选择的排序方式css激活
+    isActive(choice) {
+      choice = choice.toString();
+      //检查order中包含的是1还是2，来判断哪个排序标签需要添加激活的css
+      return this.searchParams.order.indexOf(choice) !== -1;
+    },
+    //判断是否为升序，以确定使用的箭头
+    isAsc() {
+      return this.searchParams.order.indexOf("asc") !== -1;
+    },
+    //排序的点击事件
+    changeOrder(choice){
+      console.log("Choice: ", choice);
+      let origin = this.searchParams.order;
+      let originChoice = origin.split(":")[0];
+      console.log("originChoice: ", originChoice);
+      if(originChoice === choice) {
+        if (this.isAsc()) this.searchParams.order = `${choice}:desc`;
+        else this.searchParams.order = `${choice}:asc`;
+      }else{
+        if(this.isActive(1))  this.searchParams.order = '2:desc';
+        else  this.searchParams.order = '1:desc';
+      }
       this.getData();
     }
   },
