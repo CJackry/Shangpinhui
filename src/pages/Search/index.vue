@@ -56,7 +56,10 @@
                     </strong>
                   </div>
                   <div class="attr">
-                    <a target="_blank" href="item.html" title="就这">{{ good.title }}</a>
+                    <!--对商品详情页进行跳转，携带商品id，使用模板字符串-->
+                    <router-link :to="`/detail/${good.id}`">
+                      <a target="_blank" href="item.html" title="就这">{{ good.title }}</a>
+                    </router-link>
                   </div>
                   <div class="commit">
                     <i class="command">已有<span>2000</span>人评价</i>

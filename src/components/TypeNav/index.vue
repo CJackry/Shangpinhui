@@ -67,10 +67,11 @@ export default {
       // 鼠标当前停留到的菜单索引
       currentIndex: -1,
       navShow: true,
+      //不默认显示三级联动的路由组件名
+      navShowRouteList: ['search', 'detail']
     }
   },
   mounted() {
-    //发送给action categoryList
     this.navShow = (this.$route.name === 'home');
   },
   methods: {
@@ -82,14 +83,15 @@ export default {
     ChangeIndex: throttle(function (index) {
       this.currentIndex = index;
     }, 10),
+    //控制三级联动在该路由组件下是否显示
     leaveShow() {
       this.currentIndex = -1;
-      if (this.$route.name === 'search') {
+      if (this.navShowRouteList.indexOf(this.$route.name) !== -1) {
         this.navShow = false;
       }
     },
     enterShow() {
-      if (this.$route.name === 'search') {
+      if (this.navShowRouteList.indexOf(this.$route.name) !== -1) {
         this.navShow = true;
       }
     },
