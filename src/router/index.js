@@ -7,6 +7,7 @@ import Home from '@/pages/Home';
 import Search from '@/pages/Search';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import Detail from "@/pages/Detail";
 
 //重写push与replace方法
 // 浅拷贝原型方法
@@ -70,10 +71,18 @@ export default new VueRouter({
                 show: false
             }
         },
-        //重定向
         {
-            path: '*',
-            redirect: '/home'
-        }
+          name: 'detail',
+          path: '/Detail/:id',
+          component: Detail,
+          meta: {
+              show: true
+          }
+        },
+        //重定向
+        // {
+        //     path: '*',
+        //     redirect: '/home'
+        // }
     ]
 })

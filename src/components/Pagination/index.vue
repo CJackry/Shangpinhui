@@ -1,15 +1,15 @@
 <template>
   <div class="pagination">
-    <button>上一页</button>
-    <button v-show="StartAndEnd.start > 1">1</button>
-    <button v-show="StartAndEnd.end > continues">···</button>
+    <button :disabled="pageData.pageNo === 1">上一页</button>
+    <button v-show="StartAndEnd.start > 1" @click="PageHandler(1)" :class="{active: pageData.pageNo === 1}">1</button>
+    <button v-show="StartAndEnd.end > pageData.continues">···</button>
 
-    <button v-for="(page, index) in pageMidRange" :key="index">{{ page }}</button>
+    <button v-for="(page, index) in pageMidRange" :key="index" @click="PageHandler(page)" :class="{active: pageData.pageNo === page}">{{ page }}</button>
 
     <button v-show="StartAndEnd.end < totalPages">···</button>
-    <button v-show="StartAndEnd.end < totalPages">{{ totalPages }}</button>
-    <button>下一页</button>
-    <button style="margin-left: 30px">共 {{ totalNum }} 条</button>
+    <button v-show="StartAndEnd.end < totalPages" @click="PageHandler(totalPages)" :class="{active: pageData.pageNo === totalPages}">{{ totalPages }}</button>
+    <button :disabled="pageData.pageNo === totalPages">下一页</button>
+    <button style="margin-left: 30px">共 {{ pageData.total }} 条</button>
     {{ StartAndEnd }}
   </div>
 </template>
@@ -17,27 +17,29 @@
 <script>
 export default {
   name: "Pagination",
-  props: ['pageNo', 'pageSize', 'continues', 'totalNum'],
+  props: ['pageData'],
   computed: {
     totalPages() {
       //向上取整
-      return Math.ceil(this.totalNum / this.pageSize);
+      return Math.ceil(this.pageData.total / this.pageData.pageSize);
     },
     StartAndEnd() {
       //初始化起始页码
       let start = 0, end = 0;
-      let {pageNo, continues, totalPages} = this;
-      console.log(continues);
+      let {pageNo, continues} = this.pageData;
+      let totalPages = this.totalPages;
+      // console.log(continues);
       if (totalPages < continues) {
         start = 1;
         end = totalPages;
       } else {
         //向下取整，即只保留整数部分
         start = pageNo - Math.floor(continues / 2);
-        console.log(continues);
         end = pageNo + Math.floor(continues / 2);
         if (start < 1) start = 1;
-        if (end > totalPages) end = totalPages;
+        if (end > totalPages) {
+          end = totalPages;
+        }
       }
       return {start, end};
     },
@@ -49,6 +51,12 @@ export default {
       return pages;
     }
   },
+  methods:{
+    PageHandler(page){
+      console.log("page", page);
+      this.$emit("pageInfo", page);
+    }
+  }
 
 }
 </script>
@@ -83,7 +91,7 @@ export default {
     &.active {
       cursor: not-allowed;
       background-color: #409eff;
-      color: #fff;
+      //color: #fff;
     }
   }
 }

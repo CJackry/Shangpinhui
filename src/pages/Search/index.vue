@@ -70,7 +70,7 @@
               </li>
             </ul>
           </div>
-          <Pagination :pageNo="pageNo" :pageSize="pageSize" :continues="continues" :totalNum="totalNum" />
+          <Pagination :pageData='pageData' @pageInfo = 'pageInfo'/>
         </div>
       </div>
     </div>
@@ -110,17 +110,24 @@ export default {
         //品牌（ID: 名称）
         "trademark": ""
       },
-      pageNo: 10,
-      pageSize: 3,
-      continues: 5,
-      totalNum: 91
+      // pageData: {
+      //   continues: 5,
+      //   pageNo: 0,
+      //   pageSize: 0,
+      //   total: 0
+      // }
+
     }
   },
   beforeMount() {
     Object.assign(this.searchParams, this.$route.query, this.$route.params);
+
   },
   mounted() {
     this.getData();
+    // this.pageData.pageNo = this.searchParams.pageNo;
+    // this.pageData.pageSize = this.searchParams.pageSize;
+    // this.pageData.total = this.SearchList.total;
   },
   methods: {
     getData() {
@@ -153,17 +160,26 @@ export default {
       this.getData();
     },
     //自定义事件回调
+    //面包屑
     trademarkInfo(brand) {
       //ES6模板字符串
       this.searchParams.trademark = `${brand.tmId}:${brand.tmName}`;
       this.getData();
     },
+    //传递商品属性值
     attrInfo(attr, attrValue) {
       let prop = `${attr.attrId}:${attrValue}:${attr.attrName}`;
       if (this.searchParams.props.indexOf(prop) === -1) {
         this.searchParams.props.push(prop);
         this.getData();
       }
+    },
+    //传递page信息
+    pageInfo(page) {
+      console.log('get page', page);
+      this.searchParams.pageNo = page;
+      this.getData();
+      this.$router.push({name: 'search', params: this.$route.params, query: this.$route.query})
     },
     //排序
     //选择的排序方式css激活
@@ -177,15 +193,15 @@ export default {
       return this.searchParams.order.indexOf("asc") !== -1;
     },
     //排序的点击事件
-    changeOrder(choice){
+    changeOrder(choice) {
       let origin = this.searchParams.order;
       let originChoice = origin.split(":")[0];
-      if(originChoice === choice) {
+      if (originChoice === choice) {
         if (this.isAsc()) this.searchParams.order = `${choice}:desc`;
         else this.searchParams.order = `${choice}:asc`;
-      }else{
-        if(this.isActive(1))  this.searchParams.order = '2:desc';
-        else  this.searchParams.order = '1:desc';
+      } else {
+        if (this.isActive(1)) this.searchParams.order = '2:desc';
+        else this.searchParams.order = '1:desc';
       }
       this.getData();
     }
@@ -193,7 +209,24 @@ export default {
   computed: {
     ...mapState({
       SearchList: state => state.search.SearchList,
-    })
+    }),
+    pageData(){
+      return {
+        "pageNo": this.searchParams.pageNo,
+        "pageSize": this.searchParams.pageSize,
+        "total": this.SearchList.total,
+        "continues": 5
+      }
+    }
+    // pageNo(){
+    //   return this.searchParams.pageNo;
+    // },
+    // pageSize() {
+    //   return this.searchParams.pageSize;
+    // },
+    // totalNum(){
+    //   return this.SearchList.total;
+    // }
   },
   watch: {
     // 监听路由变化，当路由的参数变化的时候对搜索页面进行重新获取数据
