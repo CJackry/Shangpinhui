@@ -1,8 +1,8 @@
 <template>
   <div class="swiper-container">
     <div class="swiper-wrapper">
-      <div class="swiper-slide" v-for="img in imgList" :key="img.id">
-        <img :src="img.imgUrl">
+      <div class="swiper-slide" v-for="(img, index) in imgList" :key="img.id">
+        <img :src="img.imgUrl" :class="{active: currentIndex===index}" @click="changeImg(index)">
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -11,11 +11,57 @@
 </template>
 
 <script>
+  import Swiper from "swiper";
 
-  // import Swiper from 'swiper'
   export default {
     name: "ImageList",
-    props:['imgList']
+    data(){
+      return {
+        currentIndex: 0,
+      }
+    },
+    props:['imgList'],
+    watch:{
+      imgList:{
+        //立即监听：不管数据是否发生了变化，直接执行一次
+        //因为list是父组件给的，即一开始数据就是固定的了，不会发生变化，因此watch监听不到list
+        immediate:true,
+        handler(){
+          this.$nextTick(()=>{
+            //创建mySwiper实例时Swiper组件必须完整，且其中的所有数据必须已经加载完毕
+            // eslint-disable-next-line no-unused-vars
+            let mySwiper = new Swiper('.swiper-container', {
+              // observer: true,
+              direction: 'horizontal', // 垂直切换选项 vertical
+              loop: true, // 循环模式选项
+              //同时展现的缩略图数量
+              slidesPerView: 3,
+              // 如果需要分页器
+              pagination: {
+                el: '.swiper-pagination',
+              },
+
+              // 如果需要前进后退按钮
+              navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+              },
+
+              // 如果需要滚动条
+              scrollbar: {
+                el: '.swiper-scrollbar',
+              },
+            });
+          })
+        }
+      }
+    },
+    methods:{
+      changeImg(index){
+        this.currentIndex = index;
+        this.$bus.$emit('imgIndex', index);
+      }
+    }
   }
 </script>
 

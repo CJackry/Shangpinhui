@@ -1,20 +1,16 @@
 import {reqSearchList} from "@/api";
-import {reqGoodDetails} from "@/api";
 //存储search组建的小仓库
 //store配置
 //state: 仓库存储数据的地方
 const state = {
     SearchList: [],
-    goodDetails: {},
+
 };
 //mutations:对仓库数据进行操作的唯一途径
 const mutations = {
     GETSEARCHLIST(state, searchList){
         state.SearchList = searchList;
     },
-    GETGOODDETAILS(state, goodDetails){
-        state.goodDetails = goodDetails;
-    }
 };
 //actions: 处理action，可以书写自己的业务逻辑，也可以处理异步
 const actions = {
@@ -28,14 +24,7 @@ const actions = {
             console.log(res.code);
         }
     },
-    async getGoodDetails({commit}, skuid){
-        let res = await reqGoodDetails(skuid);
-        if(res.code === 200){
-            commit("GETGOODDETAILS", res.data);
-        }else{
-            console.log(res.code);
-        }
-    }
+
 };
 //getters: 可以理解为计算属性，用于简化仓库数据，让组件获取仓库数据更加方便
 const getters = {

@@ -113,12 +113,6 @@ export default {
         //品牌（ID: 名称）
         "trademark": ""
       },
-      // pageData: {
-      //   continues: 5,
-      //   pageNo: 0,
-      //   pageSize: 0,
-      //   total: 0
-      // }
     }
   },
   beforeMount() {
@@ -127,9 +121,6 @@ export default {
   },
   mounted() {
     this.getData();
-    // this.pageData.pageNo = this.searchParams.pageNo;
-    // this.pageData.pageSize = this.searchParams.pageSize;
-    // this.pageData.total = this.SearchList.total;
   },
   methods: {
     getData() {

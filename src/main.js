@@ -31,7 +31,11 @@ new Vue({
     //注册路由
     router,
     //注册仓库
-    store
+    store,
+    beforeCreate() {
+        //安装全局事件总线
+        Vue.prototype.$bus = this;
+    }
 }).$mount('#app')
 
 // const app = createApp{App}.use(router)

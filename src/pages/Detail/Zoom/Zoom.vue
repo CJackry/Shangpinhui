@@ -1,18 +1,47 @@
 <template>
   <div class="spec-preview">
-    <img :src="imgUrl" />
-    <div class="event"></div>
+    <img :src="coverImg" />
+    <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img :src="imgUrl" />
+      <img :src="coverImg" ref="big" />
     </div>
-    <div class="mask"></div>
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
 <script>
   export default {
     name: "Zoom",
-    props:["imgUrl"]
+    props:["imgUrl", 'imgList'],
+    data(){
+      return {
+        coverImg: '',
+      }
+    },
+    mounted(){
+      //从全局事件总线中接收兄弟组件的数据,$on是触发事件
+      this.$bus.$on('imgIndex', (index)=>{
+        this.coverImg = this.imgList[index].imgUrl;
+      })
+    },
+    methods:{
+      // 处理放大镜
+      handler(event){
+        let mask = this.$refs.mask;
+        let big = this.$refs.big;
+        let left = event.offsetX - mask.offsetWidth / 2;
+        let top = event.offsetY - mask.offsetHeight / 2;
+        //限定范围
+        if(left <= 0)  left = 0;
+        if(left >= mask.offsetWidth)  left = mask.offsetWidth;
+        if(top <= 0)  top = 0;
+        if(top >= mask.offsetHeight)  top = mask.offsetHeight;
+        mask.style.left = left + 'px';
+        mask.style.top = top + 'px';
+        big.style.left = -2 * left + 'px';
+        big.style.top = -2 * top +'px';
+      }
+    }
   }
 </script>
 
