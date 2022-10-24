@@ -119,7 +119,6 @@ export default {
       //   pageSize: 0,
       //   total: 0
       // }
-
     }
   },
   beforeMount() {
@@ -221,15 +220,6 @@ export default {
         "continues": 5
       }
     }
-    // pageNo(){
-    //   return this.searchParams.pageNo;
-    // },
-    // pageSize() {
-    //   return this.searchParams.pageSize;
-    // },
-    // totalNum(){
-    //   return this.SearchList.total;
-    // }
   },
   watch: {
     // 监听路由变化，当路由的参数变化的时候对搜索页面进行重新获取数据

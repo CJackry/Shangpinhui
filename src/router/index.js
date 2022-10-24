@@ -84,5 +84,10 @@ export default new VueRouter({
         //     path: '*',
         //     redirect: '/home'
         // }
-    ]
+    ],
+    // eslint-disable-next-line no-unused-vars
+    scrollBehavior(to, from, savedPosition){
+        //路由跳转的滚动条位置，y=0为最顶部
+        return {y: 0}
+    }
 })
