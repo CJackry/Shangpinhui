@@ -382,7 +382,7 @@ export default {
       //async函数执行返回的是一个promise对象（要么成功要么失败）
       try {
         await this.$store.dispatch('addShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
-        this.$router.push({name: 'AddCartSuccess', } );
+        this.$router.push({name: 'AddCartSuccess'});
       } catch (error) {
         console.log('Add shopping car failed', error.message);
       }
