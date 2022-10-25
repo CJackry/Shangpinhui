@@ -74,11 +74,11 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" v-model="goodNum">
+                <input autocomplete="off" class="itxt" v-model="goodNum" @change="changeNum">
                 <a class="plus" @click="goodNumPlus">+</a>
                 <a class="mins" @click="goodNumMins">-</a>
               </div>
-              <div class="add">
+              <div class="add" @click="addShoppingCar">
                 <a href="javascript:">加入购物车</a>
               </div>
             </div>
@@ -175,7 +175,7 @@
                     </strong>
                   </div>
                   <div class="operate">
-                    <a href="javascript:void(0);">加入购物车</a>
+                    <a @click="addShoppingCar">加入购物车</a>
                   </div>
                 </div>
               </li>
@@ -356,16 +356,37 @@ export default {
         Vue.set(this.checkAttr, saleAttrName, saleAttrValueName);
       }
     },
-    goodNumPlus(){
+    goodNumPlus() {
       //应该要做库存数量限制
       this.goodNum++;
     },
-    goodNumMins(){
-      if(this.goodNum>1){
+    goodNumMins() {
+      if (this.goodNum > 1) {
         this.goodNum--;
-      }else{
+      } else {
         this.goodNum = 1;
       }
+    },
+    changeNum(event) {
+      let value = event.target.value * 1;
+      //判断用户输入的合法性
+      if (isNaN(value) || value < 1) {
+        this.goodNum = 1;
+      } else {
+        //向下取整，当用户输入小数的时候只取整数
+        value = Math.floor(value);
+        this.goodNum = value;
+      }
+    },
+    async addShoppingCar() {
+      //async函数执行返回的是一个promise对象（要么成功要么失败）
+      try {
+        await this.$store.dispatch('addShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
+        this.$router.push({name: 'AddCartSuccess', } );
+      } catch (error) {
+        console.log('Add shopping car failed', error.message);
+      }
+
     }
   },
   mounted() {

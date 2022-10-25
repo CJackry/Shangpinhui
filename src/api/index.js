@@ -9,9 +9,14 @@ import mockRequests from './mockAjax';
 //axios发送请求返回结果Promise对象
 export const reqCategoryList = () => requests({url: '/product/getBaseCategoryList', method: 'get'});
 //携带商品id发起详情请求
-export const reqGoodDetails = (skuid) => requests(({url:`item/${skuid}`, method: 'get'}));
+export const reqGoodDetails = (skuid) => requests({url:`item/${skuid}`, method: 'get'});
+//加入购物车请求 /api/cart/addToCart/{ skuId }/{ skuNum } POST
+export const reqAddShoppingCar = (skuId, skuNum) => requests({url:`/cart/addToCart/${skuId}/${skuNum}`, method:'post'});
 //带参数的POST请求，params至少是个空对象，因此调用的时候一定要带上参数！！！
 export const reqSearchList = (params)=> requests(({url: '/list', method: 'POST', data:params}));
+
+
+
 //通过mock获取生成的轮播图数据
 export const reqBannerList = () => mockRequests.get('/banner');
 export const reqFloorList = () => mockRequests.get('/floor');

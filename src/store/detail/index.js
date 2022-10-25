@@ -1,4 +1,5 @@
 import {reqGoodDetails} from "@/api";
+import {reqAddShoppingCar} from "@/api";
 
 const state =  {
     goodDetails: {},
@@ -6,7 +7,7 @@ const state =  {
 const mutations = {
     GETGOODDETAILS(state, goodDetails){
         state.goodDetails = goodDetails;
-    }
+    },
 };
 const getters = {
     goodInfo(state){
@@ -28,6 +29,15 @@ const actions = {
             commit("GETGOODDETAILS", res.data);
         }else{
             console.log(res.code);
+        }
+    },
+    // eslint-disable-next-line no-unused-vars
+    async addShoppingCar({commit}, {skuId, skuNum}){
+        let res = await reqAddShoppingCar(skuId, skuNum);
+        if(res.code === 200){
+            return 'OK';
+        }else{
+            return Promise.reject();
         }
     }
 }
