@@ -2,7 +2,7 @@
   <div class="swiper-container">
     <div class="swiper-wrapper">
       <div class="swiper-slide" v-for="(img, index) in imgList" :key="img.id">
-        <img :src="img.imgUrl" :class="{active: currentIndex===index}" @click="changeImg(index)">
+        <img :src="img.imgUrl" :class="{'active': currentIndex===index}" @click="changeImg(index)">
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -33,23 +33,13 @@
             let mySwiper = new Swiper('.swiper-container', {
               // observer: true,
               direction: 'horizontal', // 垂直切换选项 vertical
-              loop: true, // 循环模式选项
               //同时展现的缩略图数量
-              slidesPerView: 3,
-              // 如果需要分页器
-              pagination: {
-                el: '.swiper-pagination',
-              },
+              slidesPerView: 'auto',
 
               // 如果需要前进后退按钮
               navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
-              },
-
-              // 如果需要滚动条
-              scrollbar: {
-                el: '.swiper-scrollbar',
               },
             });
           })
@@ -77,8 +67,6 @@
       height: 56px;
 
       img {
-        width: 100%;
-        height: 100%;
         border: 1px solid #ccc;
         padding: 2px;
         width: 50px;

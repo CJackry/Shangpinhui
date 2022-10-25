@@ -382,7 +382,9 @@ export default {
       //async函数执行返回的是一个promise对象（要么成功要么失败）
       try {
         await this.$store.dispatch('addShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
-        this.$router.push({name: 'AddCartSuccess'});
+        //sessionStorage只能存储字符串，如果直接传入对象，会只存储[object object]，因此要先把对象转化为字符串JSON.stringify
+        sessionStorage.setItem('skuInfo', JSON.stringify(this.goodInfo));
+        this.$router.push({name: 'AddCartSuccess', query: this.goodNum});
       } catch (error) {
         console.log('Add shopping car failed', error.message);
       }

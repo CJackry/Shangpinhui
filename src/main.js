@@ -34,7 +34,7 @@ new Vue({
     store,
     beforeCreate() {
         //安装全局事件总线
-        Vue.prototype.$bus = this;
+        Vue.prototype.$bus = new Vue;
     }
 }).$mount('#app')
 

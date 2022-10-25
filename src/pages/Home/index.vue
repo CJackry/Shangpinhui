@@ -6,7 +6,7 @@
     <ListContainer></ListContainer>
     <TodayRecommend></TodayRecommend>
     <like></like>
-    <floor v-for="(floor, index) in floorList" :key="floor.id" :list="floor" />
+    <floor v-for="floor in floorList" :key="floor.id" :list="floor" />
   </div>
 </template>
 

@@ -18,6 +18,9 @@
         coverImg: '',
       }
     },
+    beforeMount() {
+      this.coverImg = this.imgUrl;
+    },
     mounted(){
       //从全局事件总线中接收兄弟组件的数据,$on是触发事件
       this.$bus.$on('imgIndex', (index)=>{
