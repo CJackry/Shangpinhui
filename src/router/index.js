@@ -9,6 +9,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import Detail from "@/pages/Detail";
 import AddCartSuccess from "@/pages/AddCartSuccess";
+import ShopCart from "@/pages/ShopCart";
 
 //重写push与replace方法
 // 浅拷贝原型方法
@@ -84,6 +85,14 @@ export default new VueRouter({
             name: 'AddCartSuccess',
             path: '/AddCartSuccess',
             component: AddCartSuccess,
+            meta: {
+                show: true
+            }
+        },
+        {
+            name: 'ShopCart',
+            path: '/ShopCart',
+            component: ShopCart,
             meta: {
                 show: true
             }
