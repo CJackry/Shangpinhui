@@ -1,9 +1,9 @@
 <template>
   <div class="spec-preview">
-    <img :src="coverImg" />
+    <img :src="coverImg" alt="商品原图" />
     <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img :src="coverImg" ref="big" />
+      <img :src="coverImg" ref="big" alt="商品放大图" />
     </div>
     <div class="mask" ref="mask"></div>
   </div>
@@ -18,8 +18,10 @@
         coverImg: '',
       }
     },
-    beforeMount() {
-      this.coverImg = this.imgUrl;
+    watch:{
+      imgUrl(v){
+        this.coverImg = v
+      }
     },
     mounted(){
       //从全局事件总线中接收兄弟组件的数据,$on是触发事件
