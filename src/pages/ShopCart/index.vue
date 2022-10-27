@@ -92,16 +92,17 @@
       }
     },
     mounted() {
-      for(let i in this.isChecked){
-        this.isChecked[i] = false;
+      for(let i = 0;i<this.goodsList.length;i++){
+        console.log(i);
+        this.isChecked.unshift(false);
       }
+      this.isChecked.pop();
     },
     methods:{
-      changeAllCheck(e){
+      changeAllCheck(){
         console.log("changeAllCheck");
           for(let i in this.isChecked){
-            console.log(e.target.value);
-            this.isChecked[i] = e.target.value;
+            this.isChecked[i] = this.AllCheck;
           }
       }
     },
