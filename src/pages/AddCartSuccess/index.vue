@@ -15,7 +15,7 @@
         <div class="right-gocart">
           <!--没有:则to只能是静态的字符串，:to就是js属性，是响应式的数据，是动态的-->
           <router-link :to="`/detail/${skuInfo.skuId}`" class="sui-btn btn-xlarge">查看商品详情</router-link>
-          <a href="javascript:" >去购物车结算 > </a>
+          <router-link to="/shopcart" class="sui-btn btn-xlarge">去购物车结算 > </router-link>
         </div>
       </div>
     </div>

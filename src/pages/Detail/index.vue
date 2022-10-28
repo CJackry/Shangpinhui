@@ -78,8 +78,9 @@
                 <a class="plus" @click="goodNumPlus">+</a>
                 <a class="mins" @click="goodNumMins">-</a>
               </div>
-              <div class="add" @click="addShoppingCar">
-                <a href="javascript:">加入购物车</a>
+              <div class="add">
+                <a @click="addShoppingCar">加入购物车</a>
+                <p style="color: red" v-show="isChoose">请选择商品属性</p>
               </div>
             </div>
           </div>
@@ -340,7 +341,8 @@ export default {
   data() {
     return {
       checkAttr: {},
-      goodNum: 1
+      goodNum: 1,
+      isChoose: false,
     }
   },
   components: {
@@ -353,7 +355,8 @@ export default {
         this.checkAttr[saleAttrName] = '';
       } else {
         //使用set设置属性，以达到使对象的属性为响应式，即会自动添加getter和setter，否则当数据变化的时候页面不会更新
-        Vue.set(this.checkAttr, saleAttrName, saleAttrValueName);
+        // Vue.set(this.checkAttr, saleAttrName, saleAttrValueName);
+        this.checkAttr[saleAttrName] = saleAttrValueName;
       }
     },
     goodNumPlus() {
@@ -378,21 +381,36 @@ export default {
         this.goodNum = value;
       }
     },
-    async addShoppingCar() {
-      //async函数执行返回的是一个promise对象（要么成功要么失败）
-      try {
-        await this.$store.dispatch('addShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
-        //sessionStorage只能存储字符串，如果直接传入对象，会只存储[object object]，因此要先把对象转化为字符串JSON.stringify
-        sessionStorage.setItem('skuInfo', JSON.stringify(this.goodInfo));
-        this.$router.push({name: 'AddCartSuccess', query: this.goodNum});
-      } catch (error) {
-        console.log('Add shopping car failed', error.message);
+    //检查用户是否选择了所有参数
+    checkChoose(){
+      for(let attr in this.checkAttr){
+        if(this.checkAttr[attr]===''){
+          this.isChoose = true;
+          return false;
+        }
       }
-
+      return true;
+    },
+    async addShoppingCar() {
+      //如果用户吧参数都选择完了在进行跳转
+      if(this.checkChoose()){
+        //async函数执行返回的是一个promise对象（要么成功要么失败）
+        try {
+          await this.$store.dispatch('addShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
+          //sessionStorage只能存储字符串，如果直接传入对象，会只存储[object object]，因此要先把对象转化为字符串JSON.stringify
+          sessionStorage.setItem('skuInfo', JSON.stringify(this.goodInfo));
+          sessionStorage.setItem('chooseAttr', JSON.stringify(this.checkAttr));
+          this.$router.push({name: 'AddCartSuccess', query: this.goodNum});
+        } catch (error) {
+          console.log('Add shopping car failed', error);
+        }
+      }
     }
   },
   mounted() {
     this.$store.dispatch('getGoodDetails', this.$route.params.id);
+    console.log(this.goodAttr);
+    this.goodAttr.forEach(attr =>  Vue.set(this.checkAttr, attr.saleAttrName, ''));
   },
   computed: {
     ...mapGetters(['goodInfo', 'goodAttr', 'categoryView']),
