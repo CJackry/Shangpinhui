@@ -82,9 +82,6 @@ export default {
   },
   mounted() {
     this.getData();
-    //处理购物车商品选中状态的初始值
-    //此处代码有问题，会出现一开始获取不到cartInfoList的值，报undefined错误
-      this.cartInfoList.forEach(() => this.isChecked.push(false))
   },
   methods: {
     changeAllCheck() {
@@ -125,6 +122,10 @@ export default {
     isChecked(checkList) {
       if (checkList.indexOf(false) === -1) this.AllCheck = true;
       else this.AllCheck = false;
+    },
+    cartInfoList(){
+      //处理购物车商品选中状态的初始值
+      this.cartInfoList.forEach(() => this.isChecked.push(false))
     }
   },
   computed: {

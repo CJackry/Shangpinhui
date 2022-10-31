@@ -410,11 +410,15 @@ export default {
   mounted() {
     this.$store.dispatch('getGoodDetails', this.$route.params.id);
     console.log(this.goodAttr);
-    //此处代码有点问题，偶尔性报错：Error in mounted hook: "TypeError: this.goodAttr.forEach is not a function"
-    this.goodAttr.forEach(attr =>  Vue.set(this.checkAttr, attr.saleAttrName, ''));
   },
   computed: {
     ...mapGetters(['goodInfo', 'goodAttr', 'categoryView']),
+  },
+  watch: {
+    //监听goodAttr，当获取到值的时候在进行操作
+    goodAttr(){
+      this.goodAttr.forEach(attr =>  Vue.set(this.checkAttr, attr.saleAttrName, ''));
+    }
   }
 }
 </script>

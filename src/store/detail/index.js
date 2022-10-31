@@ -11,10 +11,10 @@ const mutations = {
 };
 const getters = {
     goodInfo(state){
-        return state.goodDetails.skuInfo||{}
+        return state.goodDetails.skuInfo||{};
     },
     goodAttr(state) {
-        return state.goodDetails.spuSaleAttrList||{}
+        return state.goodDetails.spuSaleAttrList || [];
     },
     categoryView(state){
         //goodDetails初始状态下是个空对象，空对象的属性值为undefined，因此会报错一次categoryView的category1Name为undefined
