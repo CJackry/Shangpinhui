@@ -1,5 +1,4 @@
 import {reqGoodDetails} from "@/api";
-import {reqAddShoppingCar} from "@/api";
 
 const state =  {
     goodDetails: {},
@@ -31,15 +30,6 @@ const actions = {
             console.log(res.code);
         }
     },
-    // eslint-disable-next-line no-unused-vars
-    async addShoppingCar({commit}, {skuId, skuNum}){
-        let res = await reqAddShoppingCar(skuId, skuNum);
-        if(res.code === 200){
-            return 'OK';
-        }else{
-            return Promise.reject();
-        }
-    }
 }
 export default {
     state,

@@ -27,9 +27,10 @@
             <span class="price">{{ good.skuPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <button class="mins" @click="goodNumMins(good)">-</button>
-            <input autocomplete="off" type="text" v-model="good.skuNum" class="itxt" @change="changeNum(good)">
-            <a class="plus" @click="goodNumPlus(good)">+</a>
+            <button class="minus" @click="handlerNum('minus', good)">-</button>
+            <input autocomplete="off" type="text" v-model="good.skuNum" class="itxt"
+                   @change="handlerNum('change', good, $event.target.value * 1)">
+            <a class="plus" @click="handlerNum('add', good)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ good.cartPrice * good.skuNum }}</span>
@@ -58,7 +59,7 @@
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">{{allSum}}</i>
+          <i class="summoney">{{ allSum }}</i>
         </div>
         <div class="sumbtn">
           <a class="sum-btn" target="_blank">结算</a>
@@ -77,12 +78,11 @@ export default {
     return {
       isChecked: [],
       AllCheck: false,
-      goodAttr: sessionStorage.getItem('chooseAttr')
+      goodAttr: sessionStorage.getItem('chooseAttr'),
     }
   },
   mounted() {
     this.getData();
-    console.log("cartInfoList", this.cartInfoList);
   },
   methods: {
     changeAllCheck() {
@@ -96,39 +96,58 @@ export default {
     getData() {
       this.$store.dispatch('getShopCartList');
     },
-    changeNum(good) {
-      // let value = event.target.value * 1;
-      // console.log(event.target.value)
-      let value = good.skuNum;
-      //判断用户输入的合法性
-      if (isNaN(value) || value < 1) {
-        good.skuNum = 1;
-      } else {
-        //向下取整，当用户输入小数的时候只取整数
-        value = Math.floor(value);
-        good.skuNum = value;
+    sendUpdateNum(skuId, skuNum) {
+      this.$store.dispatch('sendUpdateShoppingCar', {skuId, skuNum});
+    },
+    // changeNum(good) {
+    //   let value = good.skuNum;
+    //   //判断用户输入的合法性
+    //   if (isNaN(value) || value < 1) {
+    //     good.skuNum = 1;
+    //   } else {
+    //     //向下取整，当用户输入小数的时候只取整数
+    //     value = Math.floor(value);
+    //     good.skuNum = value;
+    //   }
+    // },
+    // goodNumPlus(good) {
+    //   //应该要做库存数量限制
+    //   good.skuNum++;
+    //   this.sendUpdateNum(good.skuId, 1);
+    // },
+    // goodNumMins(good) {
+    //   if (good.skuNum > 1) {
+    //     good.skuNum--;
+    //     this.sendUpdateNum(good.skuId, -1);
+    //   } else {
+    //     good.skuNum = 1;
+    //   }
+    // },
+    handlerNum(type, good, Num=0){
+      let disNum = 0;
+      switch (type){
+        case 'add':
+          disNum = 1;
+          break;
+        case 'minus':
+          disNum = good.skuNum>1 ? -1:0;
+          break;
+        case 'change':
+          if(isNaN(disNum)) disNum = 0;
+          else{
+            disNum = Math.floor(Num) - good.skuNum;
+          }
+        }
+      this.sendUpdateNum(good.skuId, disNum);
+      this.getData()
       }
-      this.$store.dispatch('getEditShopCartNum', good.skuId, good.skuNum);
-      this.getData();
-    },
-    goodNumPlus(good) {
-      //应该要做库存数量限制
-      good.skuNum++;
-    },
-    goodNumMins(good) {
-      if (good.skuNum > 1) {
-        good.skuNum--;
-      } else {
-        good.skuNum = 1;
-      }
-    },
   },
   watch: {
     isChecked(checkList) {
-      if (checkList.indexOf(false) === -1) this.AllCheck = true;
-      else this.AllCheck = false;
+      this.AllCheck = checkList.indexOf(false) === -1;
     },
-    cartInfoList(){
+    cartInfoList() {
+      console.log('cateInfoList changed');
       //处理购物车商品选中状态的初始值
       this.cartInfoList.forEach(() => this.isChecked.push(false));
     }
@@ -138,14 +157,14 @@ export default {
       shopCartList: state => state.shopCart.ShopCartList,
     }),
     ...mapGetters(['cartInfoList']),
-    chooseNum(){
+    chooseNum() {
       return this.isChecked.filter(item => item === true).length;
     },
-    allSum(){
+    allSum() {
       let sum = 0;
       let index = 0;
-      for(let good of this.cartInfoList){
-        if(this.isChecked[index])
+      for (let good of this.cartInfoList) {
+        if (this.isChecked[index])
           sum += good.cartPrice * good.skuNum;
         index++;
       }
@@ -259,7 +278,8 @@ export default {
           width: 12.5%;
           margin: 0 auto;
           display: flex;
-          .mins {
+
+          .minus {
             border: 1px solid #ddd;
             border-right: 0;
             float: left;

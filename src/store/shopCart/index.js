@@ -1,4 +1,4 @@
-import {reqEditShopCartNum, reqShopCartList} from "@/api";
+import {reqShopCartList, reqUpdateShoppingCar} from "@/api";
 import {getUUID} from "@/utils/uuid_token"
 
 const state =  {
@@ -24,8 +24,9 @@ const actions = {
             console.log(res.code);
         }
     },
-    async getEditShopCartNum(skuId, skuNum){
-        let res = await reqEditShopCartNum(skuId, skuNum);
+    // eslint-disable-next-line no-unused-vars
+    async sendUpdateShoppingCar({commit}, {skuId, skuNum}){
+        let res = await reqUpdateShoppingCar(skuId, skuNum);
         if(res.code === 200){
             return 'OK';
         }else{
