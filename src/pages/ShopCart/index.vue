@@ -99,30 +99,6 @@ export default {
     sendUpdateNum(skuId, skuNum) {
       this.$store.dispatch('sendUpdateShoppingCar', {skuId, skuNum});
     },
-    // changeNum(good) {
-    //   let value = good.skuNum;
-    //   //判断用户输入的合法性
-    //   if (isNaN(value) || value < 1) {
-    //     good.skuNum = 1;
-    //   } else {
-    //     //向下取整，当用户输入小数的时候只取整数
-    //     value = Math.floor(value);
-    //     good.skuNum = value;
-    //   }
-    // },
-    // goodNumPlus(good) {
-    //   //应该要做库存数量限制
-    //   good.skuNum++;
-    //   this.sendUpdateNum(good.skuId, 1);
-    // },
-    // goodNumMins(good) {
-    //   if (good.skuNum > 1) {
-    //     good.skuNum--;
-    //     this.sendUpdateNum(good.skuId, -1);
-    //   } else {
-    //     good.skuNum = 1;
-    //   }
-    // },
     handlerNum(type, good, Num=0){
       let disNum = 0;
       switch (type){
@@ -130,15 +106,16 @@ export default {
           disNum = 1;
           break;
         case 'minus':
-          disNum = good.skuNum>1 ? -1:0;
+          disNum = good.skuNum > 1 ? -1 : 0;
           break;
         case 'change':
-          if(isNaN(disNum)) disNum = 0;
+          if(isNaN(disNum) || Num < 1)
+            disNum = 0;
           else{
-            disNum = Math.floor(Num) - good.skuNum;
+            disNum = parseInt(Num) - good.skuNum;
           }
         }
-      this.sendUpdateNum(good.skuId, disNum);
+      if(disNum !== 0) this.sendUpdateNum(good.skuId, disNum);
       this.getData()
       }
   },
