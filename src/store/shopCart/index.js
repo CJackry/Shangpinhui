@@ -1,4 +1,4 @@
-import {reqShopCartList} from "@/api";
+import {reqEditShopCartNum, reqShopCartList} from "@/api";
 import {getUUID} from "@/utils/uuid_token"
 
 const state =  {
@@ -12,7 +12,7 @@ const mutations = {
 };
 const getters = {
     cartInfoList(state){
-        return state.ShopCartList[0].cartInfoList||{};
+        return state.ShopCartList[0].cartInfoList||[];
     }
 };
 const actions = {
@@ -24,6 +24,14 @@ const actions = {
             console.log(res.code);
         }
     },
+    async getEditShopCartNum(skuId, skuNum){
+        let res = await reqEditShopCartNum(skuId, skuNum);
+        if(res.code === 200){
+            return 'OK';
+        }else{
+            return Promise.reject(res.code);
+        }
+    }
 }
 export default {
     state,

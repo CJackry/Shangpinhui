@@ -17,7 +17,7 @@
             <input type="checkbox" name="chk_list" v-model="isChecked[index]">
           </li>
           <li class="cart-list-con2">
-            <img :src="good.imgUrl">
+            <img :src="good.imgUrl" alt="">
             <div class="item-msg">{{ good.skuName }}</div>
           </li>
           <li class="cart-list-con3">
@@ -28,16 +28,16 @@
           </li>
           <li class="cart-list-con5">
             <button class="mins" @click="goodNumMins(good)">-</button>
-            <input autocomplete="off" type="text" v-model="good.skuNum" minnum="1" class="itxt" @change="changeNum(good)">
+            <input autocomplete="off" type="text" v-model="good.skuNum" class="itxt" @change="changeNum(good)">
             <a class="plus" @click="goodNumPlus(good)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ good.cartPrice * good.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a class="sindelet">删除</a>
             <br>
-            <a href="#none">移到收藏</a>
+            <a>移到收藏</a>
           </li>
         </ul>
       </div>
@@ -48,9 +48,9 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
-        <a href="#none">移到我的关注</a>
-        <a href="#none">清除下柜商品</a>
+        <a>删除选中的商品</a>
+        <a>移到我的关注</a>
+        <a>清除下柜商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">已选择
@@ -61,7 +61,7 @@
           <i class="summoney">{{allSum}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <a class="sum-btn" target="_blank">结算</a>
         </div>
       </div>
     </div>
@@ -82,11 +82,14 @@ export default {
   },
   mounted() {
     this.getData();
+    console.log("cartInfoList", this.cartInfoList);
   },
   methods: {
     changeAllCheck() {
       for (let i in this.isChecked) {
-        this.isChecked[i] = this.AllCheck;
+        //使用$set进行响应式赋值，否则当isChecked的元素变化的时候不会更新页面
+        //（如点击全选但是总价不会更新，但是直接单击改变单选框值的时候属于是改变isChecked数组）
+        this.$set(this.isChecked, i, this.AllCheck);
       }
     },
     //派发action
@@ -105,6 +108,8 @@ export default {
         value = Math.floor(value);
         good.skuNum = value;
       }
+      this.$store.dispatch('getEditShopCartNum', good.skuId, good.skuNum);
+      this.getData();
     },
     goodNumPlus(good) {
       //应该要做库存数量限制
@@ -125,7 +130,7 @@ export default {
     },
     cartInfoList(){
       //处理购物车商品选中状态的初始值
-      this.cartInfoList.forEach(() => this.isChecked.push(false))
+      this.cartInfoList.forEach(() => this.isChecked.push(false));
     }
   },
   computed: {
@@ -138,8 +143,11 @@ export default {
     },
     allSum(){
       let sum = 0;
+      let index = 0;
       for(let good of this.cartInfoList){
-        sum += good.cartPrice * good.skuNum;
+        if(this.isChecked[index])
+          sum += good.cartPrice * good.skuNum;
+        index++;
       }
       return sum;
     }

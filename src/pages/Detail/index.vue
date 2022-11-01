@@ -409,7 +409,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('getGoodDetails', this.$route.params.id);
-    console.log(this.goodAttr);
   },
   computed: {
     ...mapGetters(['goodInfo', 'goodAttr', 'categoryView']),

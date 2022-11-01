@@ -19,6 +19,8 @@ export const reqAddShoppingCar = (skuId, skuNum) => requests({
 export const reqSearchList = (params) => requests(({url: '/list', method: 'POST', data: params}));
 //获取购物车列表 /api/cart/cartList GET
 export const reqShopCartList = () => requests({url: '/cart/cartList', method: 'get'});
+//添加购物车（对购物车商品数量进行修改） /api/cart/addToCart/{ skuId }/{ skuNum } POST
+export const reqEditShopCartNum = (skuId, skuNum) => requests({url: `/api/cart/addToCart/${ skuId }/${ skuNum }`, method: 'post'});
 
 
 //通过mock获取生成的轮播图数据
