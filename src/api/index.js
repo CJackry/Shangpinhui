@@ -19,6 +19,9 @@ export const reqUpdateShoppingCar = (skuId, skuNum) => requests({
 export const reqSearchList = (params) => requests(({url: '/list', method: 'POST', data: params}));
 //获取购物车列表 /api/cart/cartList GET
 export const reqShopCartList = () => requests({url: '/cart/cartList', method: 'get'});
+//删除购物车商品 /api/cart/deleteCart/{skuId}
+export const reqDeleteShopCart = (skuId) => requests({url: `/cart/deleteCart/${skuId}`, method: 'delete'});
+
 
 
 //通过mock获取生成的轮播图数据

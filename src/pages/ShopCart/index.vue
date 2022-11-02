@@ -28,7 +28,7 @@
           </li>
           <li class="cart-list-con5">
             <button class="minus" @click="handlerNum('minus', good)">-</button>
-            <input autocomplete="off" type="text" v-model="good.skuNum" class="itxt"
+            <input autocomplete="off" type="text" :value="good.skuNum" class="itxt"
                    @change="handlerNum('change', good, $event.target.value * 1)">
             <a class="plus" @click="handlerNum('add', good)">+</a>
           </li>
@@ -36,7 +36,7 @@
             <span class="sum">{{ good.cartPrice * good.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a class="sindelet">删除</a>
+            <a class="sindelet" @click="deleteGood(good, index)">删除</a>
             <br>
             <a>移到收藏</a>
           </li>
@@ -49,7 +49,7 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a>删除选中的商品</a>
+        <a @click="deleteSelectGood">删除选中的商品</a>
         <a>移到我的关注</a>
         <a>清除下柜商品</a>
       </div>
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
+import {mapState} from "vuex";
 
 export default {
   name: 'ShopCart',
@@ -83,6 +83,7 @@ export default {
   },
   mounted() {
     this.getData();
+    this.isChecked.length = 0;
   },
   methods: {
     changeAllCheck() {
@@ -98,6 +99,9 @@ export default {
     },
     sendUpdateNum(skuId, skuNum) {
       this.$store.dispatch('sendUpdateShoppingCar', {skuId, skuNum});
+    },
+    sendDeleteGood(skuId){
+      this.$store.dispatch('deleteShopCart', skuId);
     },
     handlerNum(type, good, Num=0){
       let disNum = 0;
@@ -115,9 +119,29 @@ export default {
             disNum = parseInt(Num) - good.skuNum;
           }
         }
+
       if(disNum !== 0) this.sendUpdateNum(good.skuId, disNum);
       this.getData()
+      },
+    deleteGood(good){
+      if(confirm('爱买买，不买滚')){
+        this.sendDeleteGood(good.skuId);
+        this.getData();
       }
+    },
+    deleteSelectGood(){
+      if(confirm('确定要删除这些商品吗？')){
+        let flag = false;
+        for(let index in this.isChecked){
+          if(this.isChecked){
+            this.sendDeleteGood(this.cartInfoList[index].skuId);
+            flag = true;
+          }
+        }
+        if(!flag) alert('你还未选择商品');
+        else this.getData();
+      }
+    }
   },
   watch: {
     isChecked(checkList) {
@@ -133,7 +157,9 @@ export default {
     ...mapState({
       shopCartList: state => state.shopCart.ShopCartList,
     }),
-    ...mapGetters(['cartInfoList']),
+    cartInfoList(){
+      return this.shopCartList[0].cartInfoList;
+    },
     chooseNum() {
       return this.isChecked.filter(item => item === true).length;
     },

@@ -23,14 +23,6 @@ export default {
     this.$store.dispatch("getCategoryList");
     this.$store.dispatch('getBannerList');
     this.$store.dispatch('getFloorList');
-    //通过监听hashchange事件 判断当前页面的路由与实际的路由是否一致
-    window.addEventListener('hashchange', () => {
-      console.log('hashchange');
-      let currPath = window.location.hash.slice(1)
-      if (this.$route.path !== currPath) { // 不一致就跳转url的路由
-        this.$router.push(currPath)
-      }
-    }, false)
   },
 }
 </script>
