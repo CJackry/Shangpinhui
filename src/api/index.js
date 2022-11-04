@@ -21,7 +21,8 @@ export const reqSearchList = (params) => requests(({url: '/list', method: 'POST'
 export const reqShopCartList = () => requests({url: '/cart/cartList', method: 'get'});
 //删除购物车商品 /api/cart/deleteCart/{skuId}
 export const reqDeleteShopCart = (skuId) => requests({url: `/cart/deleteCart/${skuId}`, method: 'delete'});
-
+// 请求验证码 /api/user/passport/sendCode/{phone} get
+export const reqCode = (phone)=>requests({url: `/user/passport/sendCode/${phone}`, method: 'get'});
 
 
 //通过mock获取生成的轮播图数据
