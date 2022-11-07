@@ -23,6 +23,8 @@ export const reqShopCartList = () => requests({url: '/cart/cartList', method: 'g
 export const reqDeleteShopCart = (skuId) => requests({url: `/cart/deleteCart/${skuId}`, method: 'delete'});
 // 请求验证码 /api/user/passport/sendCode/{phone} get
 export const reqCode = (phone)=>requests({url: `/user/passport/sendCode/${phone}`, method: 'get'});
+// 注册用户 /api/user/passport/register post
+export const reqRegister = (userInfo)=>requests({url: '/user/passport/register', method: 'post', data: userInfo});
 
 
 //通过mock获取生成的轮播图数据

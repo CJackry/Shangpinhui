@@ -8,32 +8,32 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="phone">
-        <span class="error-msg">错误提示信息</span>
+        <input type="text" placeholder="请输入你的手机号" v-model="userInfo.phone" @blur="checkInput('phone')">
+        <span class="error-msg" v-show="!isOk.isPhone">请输入正确手机号</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code">
+        <input type="text" placeholder="请输入验证码" v-model="userInfo.code">
         <button style="width: 100px;height: 40px" @click="sendCode">获取验证码</button>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg" v-show="!isOk.isCode">验证码错误</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码">
-        <span class="error-msg">错误提示信息</span>
+        <input type="text" placeholder="请输入你的登录密码" v-model="userInfo.pwd" @blur="checkInput('pwd')">
+        <span class="error-msg" v-show="!isOk.isPwdInput">请输入密码</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码">
-        <span class="error-msg">错误提示信息</span>
+        <input type="text" placeholder="请输入确认密码" v-model="userInfo.pwdSure" @blur="checkInput('pwdSure')">
+        <span class="error-msg" v-show="!isOk.isPwdSame">密码不一致</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox">
+        <input name="m1" type="checkbox" v-model="userInfo.agree">
         <span>同意协议并注册《尚品汇用户协议》</span>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg" v-show="!isOk.isAgree" @blur="checkInput('agree')">请同意用户协议</span>
       </div>
       <div class="btn">
-        <button>完成注册</button>
+        <button @click="finishRegister">完成注册</button>
       </div>
     </div>
 
@@ -58,27 +58,64 @@
 
 <script>
 
-import {mapState} from "vuex";
-
 export default {
   name: 'Register',
-  data(){
+  data() {
     return {
-      phone: '',
-      code: this.captchaCode,
+      userInfo: {
+        phone: '',
+        code: '',
+        pwd: '',
+        pwdSure: '',
+        agree: false,
+      },
+      isOk: {
+        isPhone: true,
+        isPwdSame: true,
+        isCode: true,
+        isPwdInput: true,
+        isAgree: true,
+      }
     }
   },
-  mounted() {
+  methods: {
+    async sendCode() {
+      try {
+        let phone = this.userInfo.phone;
+        //这里的意思是，当this.phone不为空的时候，则会执行后边的派发请求
+        phone && await this.$store.dispatch('getCaptchaCode', phone);
+        this.userInfo.code = this.$store.state.register.captchaCode;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    checkInput(type) {
+      let phoneReg = /^1[3-9][0-9]{9}$/g;
+      switch (type) {
+        case 'phone':
+          this.isOk.isPhone = phoneReg.test(this.userInfo.phone);
+          break;
+        case 'pwdSure':
+          this.isOk.isPwdSame = (this.userInfo.pwd === this.userInfo.pwdSure);
+          break;
+        case 'pwd':
+          this.isOk.isPwdInput = !(this.userInfo.pwd === '');
+          break;
+        case 'agree':
+          this.isOk.isAgree = this.userInfo.agree;
+          break;
+      }
+    },
+    finishRegister() {
+      let flag = true;
+      for(let isCheck in this.isOk){
+        if(!isCheck)  flag=false;
+      }
+      if(flag){
+        let {phone, pwd, code} = this.userInfo;
+        this.$store.dispatch('sendRegister', {phone, password: pwd, code});
+      }
 
-  },
-  computed:{
-    ...mapState({
-      captchaCode: state => state.register.captchaCode,
-    })
-  },
-  methods:{
-    sendCode(){
-      this.$store.dispatch('getCaptchaCode', this.phone);
     }
   }
 }
