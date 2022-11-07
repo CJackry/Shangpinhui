@@ -14,7 +14,7 @@
           </ul>
 
           <div class="content">
-            <form action="##">
+            <form>
               <div class="input-text clearFix">
                 <span></span>
                 <input type="text" placeholder="邮箱/用户名/手机号">
@@ -30,7 +30,8 @@
                 </label>
                 <span class="forget">忘记密码？</span>
               </div>
-              <button class="btn">登&nbsp;&nbsp;录</button>
+              <!--使用prevent阻止form的默认行为，否则这里按钮默认为submit-->
+              <button class="btn" @click.prevent="userLogin">登&nbsp;&nbsp;录</button>
             </form>
 
             <div class="call clearFix">
@@ -68,6 +69,11 @@
 <script>
   export default {
     name: 'Login',
+    methods:{
+      userLogin(){
+
+      }
+    }
   }
 </script>
 
