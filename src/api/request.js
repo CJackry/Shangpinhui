@@ -17,7 +17,11 @@ const requests = axios.create({
 });
 //请求拦截器，再发送请求前请求拦截器都能检测，执行
 requests.interceptors.request.use((config) => {
-    if(store.state.uuid_token){
+    //是否需要携带token
+    if(store.state.user.token){
+        config.headers.token = store.state.user.token;
+    }//如果没有token则携带uuid
+    else if(store.state.uuid_token){
         //userTempId是后端定义好的需要的请求头字段
         config.headers.userTempId = store.state.uuid_token;
     }

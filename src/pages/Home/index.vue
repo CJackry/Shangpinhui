@@ -29,6 +29,9 @@ export default {
     ...mapState({
       floorList: state => state.home.floorList,
     })
+  },
+  mounted() {
+    this.$store.dispatch('getUserInfo');
   }
 }
 </script>

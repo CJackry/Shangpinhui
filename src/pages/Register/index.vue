@@ -113,9 +113,13 @@ export default {
       }
       if(flag){
         let {phone, pwd, code} = this.userInfo;
-        this.$store.dispatch('sendRegister', {phone, password: pwd, code});
+        try {
+          this.$store.dispatch('sendRegister', {phone, password: pwd, code});
+          this.$router.push('login');
+        }catch (e) {
+          console.log(e);
+        }
       }
-
     }
   }
 }

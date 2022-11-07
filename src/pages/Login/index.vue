@@ -6,7 +6,7 @@
         <div class="loginform">
           <ul class="tab clearFix">
             <li>
-              <a href="##" style="border-right: 0;">扫描登录</a>
+              <a href="##" style="border-right: 0;">扫码登录</a>
             </li>
             <li>
               <a href="##" class="current">账户登录</a>
@@ -17,11 +17,11 @@
             <form>
               <div class="input-text clearFix">
                 <span></span>
-                <input type="text" placeholder="邮箱/用户名/手机号">
+                <input type="text" placeholder="邮箱/用户名/手机号" v-model="phone">
               </div>
               <div class="input-text clearFix">
                 <span class="pwd"></span>
-                <input type="text" placeholder="请输入密码">
+                <input type="text" placeholder="请输入密码" v-model="password">
               </div>
               <div class="setting clearFix">
                 <label class="checkbox inline">
@@ -67,11 +67,30 @@
 </template>
 
 <script>
+  import {mapState} from "vuex";
+
   export default {
     name: 'Login',
+    data(){
+      return {
+        phone: '',
+        password: ''
+      }
+    },
+    computed:{
+      ...mapState({
+        userToken: state => state.user.userToken,
+      })
+    },
     methods:{
       userLogin(){
-
+        let {phone, password} = this;
+        try{
+          this.$store.dispatch('sendLogin', {phone, password});
+          this.$router.push('home');
+        }catch (e) {
+          alert(e);
+        }
       }
     }
   }
