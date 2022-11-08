@@ -31,6 +31,8 @@ export const reqLogin = (userInfo) => requests({url: '/user/passport/login', met
 export const reqUserInfo = ()=> requests({url: '/user/passport/auth/getUserInfo', method: 'get'});
 // 退出登录 /api/user/passport/logout get
 export const reqLogout = ()=>requests(({url: '/user/passport/logout', method: 'get'}));
+// 获取交易页数据 /api/order/auth/trade get
+export const reqTrade = () => requests({url: '/order/auth/trade', method: 'get'});
 
 
 //通过mock获取生成的轮播图数据
