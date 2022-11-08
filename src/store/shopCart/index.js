@@ -7,12 +7,12 @@ const state =  {
 };
 const mutations = {
     GETSHOPCARTLIST(state, ShopCartList){
-        state.ShopCartList = ShopCartList;
+        state.ShopCartList = ShopCartList[0];
     },
 };
 const getters = {
     cartInfoList(state){
-        return state.ShopCartList[0].cartInfoList||[];
+        return state.ShopCartList.cartInfoList||[];
     }
 };
 const actions = {

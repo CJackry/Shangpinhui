@@ -1,12 +1,12 @@
 //存储home组建的小仓库
-import {reqCategoryList, reqBannerList, reqFloorList} from "@/api";
+import {reqCategoryList, reqBannerList, reqFloorList, reqUserInfo} from "@/api";
 
 //state: 仓库存储数据的地方
 const state = {
     // state中数据默认不能随便写
     categoryList: [],
     bannerList: [],
-    floorList: []
+    floorList: [],
 };
 //mutations:对仓库数据进行操作的唯一途径
 const mutations = {
@@ -15,11 +15,10 @@ const mutations = {
     },
     GETBANNERLIST(state, bannerList){
         state.bannerList = bannerList;
-
     },
     GETFLOORLIST(state, floorList){
         state.floorList = floorList;
-    }
+    },
 };
 //actions: 处理action，可以书写自己的业务逻辑，也可以处理异步
 const actions = {
@@ -50,8 +49,7 @@ const actions = {
         }else{
             console.log(res.code);
         }
-    }
-
+    },
 };
 //getters: 可以理解为计算属性，用于简化仓库数据，让组件获取仓库数据更加方便
 const getters = {}

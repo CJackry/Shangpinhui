@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 
 export default {
   name: 'ShopCart',
@@ -157,9 +157,7 @@ export default {
     ...mapState({
       shopCartList: state => state.shopCart.ShopCartList,
     }),
-    cartInfoList(){
-      return this.shopCartList[0].cartInfoList;
-    },
+    ...mapGetters(['cartInfoList']),
     chooseNum() {
       return this.isChecked.filter(item => item === true).length;
     },

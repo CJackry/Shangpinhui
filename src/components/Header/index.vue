@@ -5,11 +5,15 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="!isLogin">
             <span>请</span>
             <!--  声明式路由跳转   -->
             <router-link to="/login">登录</router-link>
             <router-link to="/register" class="register">免费注册</router-link>
+          </p>
+          <p v-else>
+            <a>{{name}}</a>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -42,11 +46,21 @@
 </template>
 
 <script>
+
 export default {
   name: "Header",
   data(){
     return {
-      keyword: ''
+      keyword: '',
+      isLogin: false,
+    }
+  },
+  mounted() {
+    if(this.$store.state.user.token !== '') this.isLogin = true;
+  },
+  computed:{
+    name(){
+      return this.$store.state.user.userInfo.name;
     }
   },
   methods:{
@@ -56,6 +70,15 @@ export default {
       // this.$router.push('/search/'+this.keyword);
       // 编程式参数传递
       this.$router.push({name:'search', params:{keyword: this.keyword}})
+    },
+    async logout(){
+      try {
+        await this.$store.dispatch('sendLogout');
+        this.isLogin = false;
+        this.$router.push('home');
+      }catch (e) {
+        console('logout failed');
+      }
     }
   },
 

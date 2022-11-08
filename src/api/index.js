@@ -29,6 +29,8 @@ export const reqRegister = (userInfo)=>requests({url: '/user/passport/register',
 export const reqLogin = (userInfo) => requests({url: '/user/passport/login', method: 'post', data: userInfo});
 // 获取用户信息 api/user/passport/auth/getUserInfo get
 export const reqUserInfo = ()=> requests({url: '/user/passport/auth/getUserInfo', method: 'get'});
+// 退出登录 /api/user/passport/logout get
+export const reqLogout = ()=>requests(({url: '/user/passport/logout', method: 'get'}));
 
 
 //通过mock获取生成的轮播图数据

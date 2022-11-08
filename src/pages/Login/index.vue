@@ -79,7 +79,7 @@
     },
     computed:{
       ...mapState({
-        userToken: state => state.user.userToken,
+        token: state => state.user.token,
       })
     },
     methods:{

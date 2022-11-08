@@ -4,7 +4,7 @@ import axios from "axios";
 import nprogress from "nprogress";
 //引入进度条样式，修改进度条样式直接去该目录下的css文件下改
 import "nprogress/nprogress.css";
-import store from "@/store/shopCart"
+import store from "@/store"
 
 //利用axios对象的方法create来创建一个axios实例
 //requests就是axios一个实例，但是可以自行进行配置
@@ -19,9 +19,11 @@ const requests = axios.create({
 requests.interceptors.request.use((config) => {
     //是否需要携带token
     if(store.state.user.token){
+        // console.log('token', store.state.user.token);
         config.headers.token = store.state.user.token;
     }//如果没有token则携带uuid
-    else if(store.state.uuid_token){
+    else if(store.state.shopCart.uuid_token){
+        console.log('uuid', store.state.shopCart.uuid_token);
         //userTempId是后端定义好的需要的请求头字段
         config.headers.userTempId = store.state.uuid_token;
     }
