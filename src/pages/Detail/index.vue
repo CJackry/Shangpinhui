@@ -396,7 +396,7 @@ export default {
       if(this.checkChoose()){
         //async函数执行返回的是一个promise对象（要么成功要么失败）
         try {
-          await this.$store.dispatch('addShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
+          await this.$store.dispatch('updateShoppingCar', {skuId: this.$route.params.id, skuNum: this.goodNum});
           //sessionStorage只能存储字符串，如果直接传入对象，会只存储[object object]，因此要先把对象转化为字符串JSON.stringify
           sessionStorage.setItem('skuInfo', JSON.stringify(this.goodInfo));
           sessionStorage.setItem('chooseAttr', JSON.stringify(this.checkAttr));

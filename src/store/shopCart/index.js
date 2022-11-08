@@ -16,6 +16,15 @@ const getters = {
     }
 };
 const actions = {
+    // eslint-disable-next-line no-unused-vars
+    async updateShoppingCar({commit}, {skuId, skuNum}){
+        let res = await reqUpdateShoppingCar(skuId, skuNum);
+        if(res.code === 200){
+            return 'OK';
+        }else{
+            return Promise.reject(new Error('fail'));
+        }
+    },
     async getShopCartList({commit}){
         let res = await reqShopCartList();
         if(res.code === 200){

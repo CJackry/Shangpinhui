@@ -67,8 +67,6 @@
 </template>
 
 <script>
-  import {mapState} from "vuex";
-
   export default {
     name: 'Login',
     data(){
@@ -77,16 +75,11 @@
         password: ''
       }
     },
-    computed:{
-      ...mapState({
-        token: state => state.user.token,
-      })
-    },
     methods:{
-      userLogin(){
+     async userLogin(){
         let {phone, password} = this;
         try{
-          this.$store.dispatch('sendLogin', {phone, password});
+          await this.$store.dispatch('sendLogin', {phone, password});
           this.$router.push('home');
         }catch (e) {
           alert(e);

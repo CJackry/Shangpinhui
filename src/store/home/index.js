@@ -1,5 +1,5 @@
 //存储home组建的小仓库
-import {reqCategoryList, reqBannerList, reqFloorList, reqUserInfo} from "@/api";
+import {reqCategoryList, reqBannerList, reqFloorList} from "@/api";
 
 //state: 仓库存储数据的地方
 const state = {

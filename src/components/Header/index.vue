@@ -12,13 +12,13 @@
             <router-link to="/register" class="register">免费注册</router-link>
           </p>
           <p v-else>
-            <a>{{name}}</a>
+            <a>{{ name }}</a>
             <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
-          <a href="###">我的订单</a>
-          <a href="###">我的购物车</a>
+          <router-link to="/center">我的订单</router-link>
+          <router-link to="/ShopCart">我的购物车</router-link>
           <a href="###">我的尚品汇</a>
           <a href="###">尚品汇会员</a>
           <a href="###">企业采购</a>
@@ -47,36 +47,49 @@
 
 <script>
 
+import {getToken} from "@/utils/token";
+
 export default {
   name: "Header",
-  data(){
+  data() {
     return {
       keyword: '',
       isLogin: false,
     }
   },
   mounted() {
-    if(this.$store.state.user.token !== '') this.isLogin = true;
+    let token = getToken();
+    if (token) {
+      this.$store.dispatch('getUserInfo');
+      this.isLogin = true;
+    }
   },
-  computed:{
-    name(){
+  computed: {
+    name() {
       return this.$store.state.user.userInfo.name;
     }
   },
-  methods:{
-    goSearch(){
+  watch: {
+    name() {
+      //需要使用isLogin来判断是否已登陆
+      // 如果直接使用name则当刷新页面的时候,一开始name为undefined则会先显示未登录的状态然后再显示登陆状态
+      this.isLogin = !!this.name;
+    }
+  },
+  methods: {
+    goSearch() {
       //编程式路由跳转
       // 声明式参数传递
       // this.$router.push('/search/'+this.keyword);
       // 编程式参数传递
-      this.$router.push({name:'search', params:{keyword: this.keyword}})
+      this.$router.push({name: 'search', params: {keyword: this.keyword}})
     },
-    async logout(){
+    async logout() {
       try {
         await this.$store.dispatch('sendLogout');
-        this.isLogin = false;
-        this.$router.push('home');
-      }catch (e) {
+        // 如果退出登录则重新进入home页面
+        this.$router.push('/home');
+      } catch (e) {
         console('logout failed');
       }
     }
