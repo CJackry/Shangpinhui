@@ -7,6 +7,8 @@ import AddCartSuccess from "@/pages/AddCartSuccess";
 import ShopCart from "@/pages/ShopCart";
 import Trade from "@/pages/Trade";
 import Center from "@/pages/Center";
+import Pay from "@/pages/Pay";
+import PaySuccess from "@/pages/PaySuccess";
 
 export const routes = [
     {
@@ -81,7 +83,24 @@ export const routes = [
             show: true
         }
     },
+    {
+        name: 'Pay',
+        path: '/Pay',
+        component: Pay,
+        meta: {
+            show: true
+        }
+    },
+    {
+        name: 'PaySuccess',
+        path: '/PaySuccess',
+        component: PaySuccess,
+        meta: {
+            show: true
+        }
+    },
     //重定向
+
     // {
     //     path: '*',
     //     redirect: '/home'

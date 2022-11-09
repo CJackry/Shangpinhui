@@ -56,9 +56,10 @@ const actions = {
         let res = await reqUserInfo();
         if (res.code === 200) {
             commit('GETUERINFO', res.data);
-        } else {
-            console.log(res.code);
         }
+        // else {
+        //     return Promise.reject(res.message);
+        // }
     },
     async sendLogout({commit}){
         let res = await reqLogout();

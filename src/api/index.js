@@ -22,19 +22,27 @@ export const reqShopCartList = () => requests({url: '/cart/cartList', method: 'g
 //删除购物车商品 /api/cart/deleteCart/{skuId}
 export const reqDeleteShopCart = (skuId) => requests({url: `/cart/deleteCart/${skuId}`, method: 'delete'});
 // 请求验证码 /api/user/passport/sendCode/{phone} get
-export const reqCode = (phone)=>requests({url: `/user/passport/sendCode/${phone}`, method: 'get'});
+export const reqCode = (phone) => requests({url: `/user/passport/sendCode/${phone}`, method: 'get'});
 // 注册用户 /api/user/passport/user post
-export const reqRegister = (userInfo)=>requests({url: '/user/passport/register', method: 'post', data: userInfo});
+export const reqRegister = (userInfo) => requests({url: '/user/passport/register', method: 'post', data: userInfo});
 // 用户登录 /api/user/passport/login post
 export const reqLogin = (userInfo) => requests({url: '/user/passport/login', method: 'post', data: userInfo});
 // 获取用户信息 api/user/passport/auth/getUserInfo get
-export const reqUserInfo = ()=> requests({url: '/user/passport/auth/getUserInfo', method: 'get'});
+export const reqUserInfo = () => requests({url: '/user/passport/auth/getUserInfo', method: 'get'});
 // 退出登录 /api/user/passport/logout get
-export const reqLogout = ()=>requests(({url: '/user/passport/logout', method: 'get'}));
+export const reqLogout = () => requests(({url: '/user/passport/logout', method: 'get'}));
 // 获取交易页数据 /api/order/auth/trade get
 export const reqTrade = () => requests({url: '/order/auth/trade', method: 'get'});
 // 获取用户地址 /api/user/userAddress/auth/findUserAddressList get
-export const reqUserAddress = ()=> requests({url: '/user/userAddress/auth/findUserAddressList', method: 'get'});
+export const reqUserAddress = () => requests({url: '/user/userAddress/auth/findUserAddressList', method: 'get'});
+// 提交订单 /api/order/auth/submitOrder?tradeNo={tradeNo} post
+export const reqSubmitOrder = (tradeNo, data) => requests({
+    url: `/order/auth/submitOrder?tradeNo=${tradeNo}`,
+    method: 'post',
+    data: data
+})
+// 获取订单支付信息 /api/payment/weixin/createNative/{orderId} get
+export const reqPayInfo = (orderId) => requests({url: `/payment/weixin/createNative/${orderId}`, method: 'get'})
 
 
 //通过mock获取生成的轮播图数据

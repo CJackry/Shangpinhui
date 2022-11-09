@@ -62,6 +62,8 @@ export default {
     if (token) {
       this.$store.dispatch('getUserInfo');
       this.isLogin = true;
+    }else{
+      this.isLogin = false;
     }
   },
   computed: {
@@ -71,9 +73,10 @@ export default {
   },
   watch: {
     name() {
+      console.log("name change");
       //需要使用isLogin来判断是否已登陆
       // 如果直接使用name则当刷新页面的时候,一开始name为undefined则会先显示未登录的状态然后再显示登陆状态
-      this.isLogin = !!this.name;
+      this.isLogin = this.name !== 'undefined';
     }
   },
   methods: {

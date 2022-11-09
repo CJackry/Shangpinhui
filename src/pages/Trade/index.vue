@@ -5,9 +5,9 @@
       <h5 class="receive">收件人信息</h5>
       <div class="address clearFix" v-for="address in userAddress" :key="address.id">
         <span class="username" :class="{selected: chooseId === address.id}"
-              @click="handleAddress(address.id)">{{ address.consignee }}</span>
-        <p @click="handleAddress(address.id)">
-          <span class="s1">{{ address.fullAddress }}</span>
+              @click="handleChoose('address', address.id)">{{ address.consignee }}</span>
+        <p @click="handleChoose('address', address.id)">
+          <span class="s1">{{ address.fullAddress || "" }}</span>
           <span class="s2">{{ address.phoneNum }}</span>
           <span class="s3" v-if="address.isDefault === '1'">默认地址</span>
         </p>
@@ -15,8 +15,9 @@
       <div class="line"></div>
       <h5 class="pay">支付方式</h5>
       <div class="address clearFix">
-        <span class="username selected">在线支付</span>
-        <span class="username" style="margin-left:5px;">货到付款</span>
+        <span class="username" :class="{selected: payWay === 1}" @click="handleChoose('payWay', 1)">在线支付</span>
+        <span class="username" style="margin-left:5px;" :class="{selected: payWay === 0}"
+              @click="handleChoose('payWay', 0)">货到付款</span>
 
       </div>
       <div class="line"></div>
@@ -24,7 +25,13 @@
       <div class="way">
         <h5>配送方式</h5>
         <div class="info clearFix">
-          <span class="s1">天天快递</span>
+          <span class="s1" :class="{selected: expressWay === 'tt'}"
+                @click="handleChoose('expressWay', 'tt')">天天快递</span>
+          <p>配送时间：预计8月10日（周三）09:00-15:00送达</p>
+        </div>
+        <div class="info clearFix">
+          <span class="s1" :class="{selected: expressWay === 'sf'}"
+                @click="handleChoose('expressWay', 'sf')">顺丰快递</span>
           <p>配送时间：预计8月10日（周三）09:00-15:00送达</p>
         </div>
       </div>
@@ -48,7 +55,7 @@
       </div>
       <div class="bbs">
         <h5>买家留言：</h5>
-        <textarea placeholder="建议留言前先与商家沟通确认" class="remarks-cont"></textarea>
+        <textarea placeholder="建议留言前先与商家沟通确认" class="remarks-cont" v-model="msg"></textarea>
 
       </div>
       <div class="line"></div>
@@ -61,8 +68,8 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>{{allGoodsNum}}</i>件商品，总商品金额</b>
-          <span>¥{{allPrice}}</span>
+          <b><i>{{ tradeInfo.totalNum }}</i>件商品，总商品金额</b>
+          <span>¥{{ tradeInfo.totalAmount }}</span>
         </li>
         <li>
           <b>返现：</b>
@@ -75,16 +82,16 @@
       </ul>
     </div>
     <div class="trade">
-      <div class="price">应付金额:&nbsp;<span>¥{{allPrice}}</span></div>
+      <div class="price">应付金额:&nbsp;<span>¥{{ tradeInfo.totalAmount }}</span></div>
       <div class="receiveInfo">
         寄送至:
-        <span>{{ chooseAddress.fullAddress }}</span>
-        收货人：<span>{{chooseAddress.consignee}}</span>
-        <span>{{chooseAddress.phoneNum}}</span>
+        <span>{{ chooseAddress.fullAddress || "" }}</span>
+        收货人：<span>{{ chooseAddress.consignee }}</span>
+        <span>{{ chooseAddress.phoneNum }}</span>
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
@@ -94,11 +101,14 @@ import {mapGetters, mapState} from "vuex";
 
 export default {
   name: 'Trade',
-  data(){
+  data() {
     return {
       chooseId: -1,
-      allGoodsNum: 0,
-      allPrice: 0,
+      // 支付方式：0-货到付款，1-在线支付
+      payWay: 1,
+      expressWay: 'sf',
+      msg: '',
+      orderId: -1
     }
   },
   mounted() {
@@ -112,30 +122,57 @@ export default {
     }),
     ...mapGetters(['goodTradeList']),
     // 用户选择的地址
-    chooseAddress(){
+    chooseAddress() {
       return this.userAddress.find(item => item.id === this.chooseId);
     },
 
   },
-  watch:{
-    userAddress(){
-      let defaultAddress = this.userAddress.find(item => item.isDefault==='1');
+  watch: {
+    userAddress() {
+      let defaultAddress = this.userAddress.find(item => item.isDefault === '1');
       this.chooseId = defaultAddress.id;
     },
-    goodTradeList(){
-      // 订单商品总数
-      let sum = 0, sumPrice = 0;
-      this.goodTradeList.forEach(good => {
-        sum += good.skuNum;
-        sumPrice += good.skuNum * good.orderPrice
-      });
-      this.allGoodsNum = sum;
-      this.allPrice = sumPrice;
-    }
+    // goodTradeList() {
+    //   // 订单商品总数
+    //   let sum = 0, sumPrice = 0;
+    //   this.goodTradeList.forEach(good => {
+    //     sum += good.skuNum;
+    //     sumPrice += good.skuNum * good.orderPrice
+    //   });
+    //   this.allGoodsNum = sum;
+    //   this.allPrice = sumPrice;
+    // }
   },
-  methods:{
-    handleAddress(id){
-      this.chooseId = id;
+  methods: {
+    handleChoose(type, id) {
+      switch (type) {
+        case 'address':
+          this.chooseId = id;
+          break;
+        case 'payWay':
+          this.payWay = id;
+          break;
+        case 'expressWay':
+          this.expressWay = id;
+          break;
+      }
+    },
+    async submitOrder() {
+      let {tradeNo} = this.tradeInfo;
+      let data = {
+        consignee: this.chooseAddress.consignee,
+        consigneeTel: this.chooseAddress.phoneNum,
+        deliveryAddress: this.chooseAddress.fullAddress,
+        paymentWay: "ONLINE",
+        orderComment: this.msg,
+        orderDetailList: this.goodTradeList,
+      }
+      //发起请求的时候一定要注意使用async+await，否则返回的res会是个Promise
+      let res = await this.$API.reqSubmitOrder(tradeNo, data);
+      if(res.code === 200){
+        this.orderId = res.data;
+        this.$router.push(`/pay?orderId=${this.orderId}`);
+      }
     }
   }
 }
@@ -239,7 +276,7 @@ export default {
 
     .way {
       width: 1080px;
-      height: 110px;
+      height: 180px;
       background: #f4f4f4;
       padding: 15px;
       margin: 0 auto;
@@ -259,6 +296,14 @@ export default {
           line-height: 30px;
           text-align: center;
           margin-right: 10px;
+        }
+
+        .s1.selected {
+          border-color: #e1251b;
+        }
+
+        .s1.selected::after {
+          display: block;
         }
 
         p {

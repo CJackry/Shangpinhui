@@ -26,6 +26,9 @@ import "@/mock/mockServe";
 import 'swiper/js/swiper'
 import 'swiper/css/swiper.css'
 
+// 统一引入API中的请求，在不使用Vuex情况下方便管理使用
+import * as API from './api'
+
 new Vue({
     render: h => h(App),
     //注册路由
@@ -35,6 +38,8 @@ new Vue({
     beforeCreate() {
         //安装全局事件总线
         Vue.prototype.$bus = new Vue;
+        //此时$API是一个对象，包含了api文件中的所有请求
+        Vue.prototype.$API = API;
     }
 }).$mount('#app')
 
