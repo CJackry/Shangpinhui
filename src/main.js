@@ -29,6 +29,12 @@ import 'swiper/css/swiper.css'
 // 统一引入API中的请求，在不使用Vuex情况下方便管理使用
 import * as API from './api'
 
+// 引入element-ui
+import { Button, Select } from 'element-ui';
+
+Vue.component(Button.name, Button);
+Vue.component(Select.name, Select);
+
 new Vue({
     render: h => h(App),
     //注册路由
