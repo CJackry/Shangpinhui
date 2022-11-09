@@ -47,7 +47,8 @@ const actions = {
         if (res.code === 200) {
             commit('SENDLOGIN', res.data.token);
         } else {
-            console.log(res.code);
+            // 登陆失败返回Promise
+            return Promise.reject(res.message);
         }
     },
     // eslint-disable-next-line no-unused-vars

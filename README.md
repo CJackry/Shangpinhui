@@ -23,6 +23,9 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### 调试账号
+- 13700000000
+- 111111
 
 # 项目结构
 ## 1. public
