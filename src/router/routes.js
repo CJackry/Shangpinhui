@@ -9,6 +9,8 @@ import Trade from "@/pages/Trade";
 import Center from "@/pages/Center";
 import Pay from "@/pages/Pay";
 import PaySuccess from "@/pages/PaySuccess";
+import myOrder from "@/pages/Center/myOrder";
+import groupOrder from "@/pages/Center/groupOrder";
 
 export const routes = [
     {
@@ -79,6 +81,23 @@ export const routes = [
         name: 'Center',
         path: '/Center',
         component: Center,
+        children:[
+            //children的path要么直接写路由名要么就要把完整路径写全
+            //如要是写的是/myOrder,则跳转的时候会变成localhost:3000/#/myOrder
+            {
+                path: 'myOrder',
+                component: myOrder
+            },
+            {
+                path: 'groupOrder',
+                component: groupOrder
+            },
+            //Center是父，则直接/Center
+            {
+                path: '/Center',
+                redirect: 'myOrder'
+            }
+        ],
         meta: {
             show: true
         }
@@ -99,6 +118,7 @@ export const routes = [
             show: true
         }
     },
+
     //重定向
 
     // {

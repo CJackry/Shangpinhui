@@ -1,8 +1,9 @@
-import {reqTrade, reqUserAddress} from "@/api";
+import {reqTrade, reqUserAddress, reqMyOrderList} from "@/api";
 
 const state = {
     tradeInfo: {},
-    userAddress: []
+    userAddress: [],
+    myOrderList: []
 };
 const mutations = {
     REQTRADE(state, tradeInfo) {
@@ -10,6 +11,9 @@ const mutations = {
     },
     GETUSERADDRESS(state, userAddress) {
         state.userAddress = userAddress;
+    },
+    GETMYORDERLIST(state, myOrderList){
+        state.myOrderList = myOrderList;
     }
 };
 const getters = {
@@ -33,6 +37,12 @@ const actions = {
             commit("GETUSERADDRESS", res.data);
         } else {
             console.log("getUserAddress failed: ", res.code);
+        }
+    },
+    async getMyOrderList({commit}, {page, limit}){
+        let res = await reqMyOrderList(page, limit);
+        if(res.code === 200){
+            commit('GETMYORDERLIST', res.data);
         }
     }
 };

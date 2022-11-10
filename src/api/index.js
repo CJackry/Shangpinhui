@@ -43,6 +43,11 @@ export const reqSubmitOrder = (tradeNo, data) => requests({
 })
 // 获取订单支付信息 /api/payment/weixin/createNative/{orderId} get
 export const reqPayInfo = (orderId) => requests({url: `/payment/weixin/createNative/${orderId}`, method: 'get'})
+// 获取支付订单状态 /api/payment/weixin/queryPayStatus/{orderId} get
+export const reqPayStatus = (orderId) => requests({url: `/payment/weixin/queryPayStatus/${orderId}`, method: 'get'});
+// 获取我的订单列表 /api/order/auth/{page}/{limit} get
+export const reqMyOrderList = (page, limit) => requests({url: `/order/auth/${page}/${limit}`, method: 'get'});
+
 
 
 //通过mock获取生成的轮播图数据

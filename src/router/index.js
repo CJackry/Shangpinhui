@@ -47,11 +47,12 @@ let router = new VueRouter({
 //前置守卫(路由跳转之前进行判断)
 // to: 跳转之后的路由 from: 发起跳转的原页面 next: 控制跳转,next()为放行,next(route)为放行到route
 router.beforeEach((to, from, next) => {
+    let routesForbidWithoutToken = ['login', 'register', 'pay', 'paySuccess'];
     let token = getToken();
     console.log(to, token);
     // 如果用户已登录
     if(token){
-        if(to.name === 'login' || to.name === 'register'){
+        if(routesForbidWithoutToken.find(route => route === to.name)){
             next('/home');
         }else{
             next();

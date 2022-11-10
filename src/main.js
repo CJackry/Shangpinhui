@@ -30,10 +30,11 @@ import 'swiper/css/swiper.css'
 import * as API from './api'
 
 // 引入element-ui
-import { Button, Select } from 'element-ui';
+import { MessageBox, Message } from 'element-ui';
 
-Vue.component(Button.name, Button);
-Vue.component(Select.name, Select);
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$message = Message
+Vue.prototype.$alert = MessageBox.alert;
 
 new Vue({
     render: h => h(App),
