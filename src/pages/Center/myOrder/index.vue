@@ -29,11 +29,11 @@
           <thead>
           <tr>
             <th colspan="5">
-                <span class="ordertitle"
-                >{{ order.createTime }} 订单编号：{{ order.outTradeNo }}
-                  <span class="pull-right delete"
-                  ><img src="../images/delete.png"
-                  /></span>
+                <span class="ordertitle">
+                  {{ order.createTime }} 订单编号：{{ order.outTradeNo }}
+                  <span class="pull-right delete">
+                    <img src="../images/delete.png" alt=""/>
+                  </span>
                 </span>
             </th>
           </tr>
@@ -48,39 +48,20 @@
                 <a href="#" class="service">售后申请</a>
               </div>
             </td>
-            <td
-                :rowspan="order.orderDetailList.length"
-                v-if="index == 0"
-                width="8%"
-                class="center"
-            >
+            <!--购买的收货，金额等信息只需要出现一个就行了，但是v-for会一直遍历因此会出现多出来的信息，所以使用v-if来控制-->
+            <td :rowspan="order.orderDetailList.length" v-if="index === 0" width="8%" class="center">
               {{ order.consignee }}
             </td>
-            <td
-                :rowspan="order.orderDetailList.length"
-                v-if="index == 0"
-                width="13%"
-                class="center"
-            >
+            <td :rowspan="order.orderDetailList.length" v-if="index === 0" width="13%" class="center">
               <ul class="unstyled">
                 <li>总金额¥{{ order.totalAmount }}.00</li>
                 <li>在线支付</li>
               </ul>
             </td>
-            <td
-                :rowspan="order.orderDetailList.length"
-                v-if="index == 0"
-                width="8%"
-                class="center"
-            >
+            <td :rowspan="order.orderDetailList.length" v-if="index === 0" width="8%" class="center">
               <a href="#" class="btn">{{ order.orderStatusName }}</a>
             </td>
-            <td
-                :rowspan="order.orderDetailList.length"
-                v-if="index == 0"
-                width="13%"
-                class="center"
-            >
+            <td :rowspan="order.orderDetailList.length" v-if="index === 0" width="13%" class="center">
               <ul class="unstyled">
                 <li>
                   <a href="mycomment.html" target="_blank">评价|晒单</a>
@@ -91,6 +72,14 @@
           </tbody>
         </table>
       </div>
+      <el-pagination
+          style="text-align: center"
+          background
+          layout="prev, pager, next"
+          current-page="currentPage"
+          @current-change="handleCurrentChange"
+          :total="totalPages">
+      </el-pagination>
       <!--猜你喜欢-->
       <div class="like">
         <h4 class="kt">猜你喜欢</h4>
@@ -162,12 +151,12 @@ export default {
   name: "myOrder",
   data() {
     return {
-      page: 1,
-      limit: 3
+      totalPages: 10,
+      currentPage: 1,
     }
   },
   mounted() {
-    this.$store.dispatch('getMyOrderList', {page: 1, limit: 3});
+    this.getData({page: 1, limit: 3});
   },
   computed: {
     ...mapState({
@@ -177,281 +166,253 @@ export default {
       return this.myOrderList.records;
     }
   },
-  methods: {}
+  watch:{
+    myOrderList(){
+      this.totalPages = this.myOrderList.pages;
+      this.currentPage = this.myOrderList.current;
+    }
+  },
+  methods: {
+    getData({page, limit}){
+      this.$store.dispatch('getMyOrderList', {page, limit});
+    },
+    handleCurrentChange(val){
+      // val就是当前点击的页码
+      this.currentPage = val;
+      this.getData({page: val, limit: 3});
+    }
+  }
 }
 </script>
 
 <style lang="less" scoped>
-.order-main {
-  .container {
-    margin: 0 auto;
-    width: 1200px;
+//右边
+.order-right {
+  float: right;
+  width: 83.33%;
 
-    .order-body {
-      padding: 10px;
-      color: #333;
+  //订单部分
+  .order-content {
+    margin: 0 20px;
+    color: #666;
 
-      &:after {
-        content: "";
-        display: block;
-        clear: both;
+    //标题
+    .title {
+      margin-bottom: 22px;
+      border: 1px solid #ddd;
+
+      h3 {
+        padding: 12px 10px;
+        font-size: 15px;
+        background-color: #f1f1f1;
+
       }
+    }
 
-      //左边
-      .order-left {
-        float: left;
-        width: 16.67%;
+    //表头
+    .chosetype {
+      margin-bottom: 15px;
+      color: #666;
 
-        dl {
-          line-height: 28px;
+      table {
+        border: 1px solid #e6e6e6;
+        border-collapse: separate;
+        border-radius: 2px;
+        width: 100%;
+        max-width: 100%;
+        border-spacing: 0;
 
-          dt {
-            font-weight: 700;
-            padding: 5px;
+        th {
+          padding: 6px 8px;
+          color: #666;
+          font-weight: 700;
+          vertical-align: bottom;
+          background-color: #f4f4f4;
+          line-height: 18px;
+          border-bottom: 1px solid #e6e6e6;
+          font-size: 12px;
+          text-align: left;
+          text-align: center;
+        }
+      }
+    }
 
-            i {
-              color: #77b72c;
-            }
-          }
+    // 表单内容
+    .orders {
+      font-size: 12px;
 
-          dd {
-            margin: 0 0 6px;
-            border-bottom: 1px solid #ededed;
-            text-align: center;
-          }
+      a {
+        &:hover {
+          color: #4cb9fc;
         }
       }
 
-      //右边
-      .order-right {
-        float: right;
-        width: 83.33%;
+      table {
+        border: 1px solid #e6e6e6;
+        border-collapse: collapse;
+        border-radius: 2px;
+        width: 100%;
+        margin-bottom: 18px;
+        max-width: 100%;
 
-        //订单部分
-        .order-content {
-          margin: 0 20px;
+        th {
+          padding: 6px 8px;
+          line-height: 18px;
+          text-align: left;
+          vertical-align: bottom;
+          background-color: #f4f4f4;
+          font-size: 12px;
           color: #666;
 
-          //标题
-          .title {
-            margin-bottom: 22px;
-            border: 1px solid #ddd;
+          .pull-right {
+            float: right;
+            cursor: pointer;
 
-            h3 {
-              padding: 12px 10px;
-              font-size: 15px;
-              background-color: #f1f1f1;
-
+            img {
+              margin-right: 10px;
+              vertical-align: middle;
             }
           }
+        }
 
-          //表头
-          .chosetype {
-            margin-bottom: 15px;
-            color: #666;
+        td {
+          font-size: 12px;
+          color: #666;
+          padding: 6px 8px;
+          line-height: 18px;
+          text-align: left;
+          vertical-align: middle;
+          border: 1px solid #e6e6e6;
 
-            table {
-              border: 1px solid #e6e6e6;
-              border-collapse: separate;
-              border-radius: 2px;
-              width: 100%;
-              max-width: 100%;
-              border-spacing: 0;
-
-              th {
-                padding: 6px 8px;
-                color: #666;
-                font-weight: 700;
-                vertical-align: bottom;
-                background-color: #f4f4f4;
-                line-height: 18px;
-                border-bottom: 1px solid #e6e6e6;
-                font-size: 12px;
-                text-align: left;
-                text-align: center;
-              }
-            }
+          &.center {
+            text-align: center;
           }
 
-          // 表单内容
-          .orders {
-            font-size: 12px;
+          .typographic {
+            img {
+              float: left;
+              margin-right: 10px;
+            }
 
             a {
-              &:hover {
-                color: #4cb9fc;
+              float: left;
+              min-width: 80px;
+              max-width: 250px;
+              color: #e1251b;
+
+              &.service {
+                color: #666;
               }
             }
 
-            table {
-              border: 1px solid #e6e6e6;
-              border-collapse: collapse;
-              border-radius: 2px;
-              width: 100%;
-              margin-bottom: 18px;
-              max-width: 100%;
-
-              th {
-                padding: 6px 8px;
-                line-height: 18px;
-                text-align: left;
-                vertical-align: bottom;
-                background-color: #f4f4f4;
-                font-size: 12px;
-                color: #666;
-
-                .pull-right {
-                  float: right;
-                  cursor: pointer;
-
-                  img {
-                    margin-right: 10px;
-                    vertical-align: middle;
-                  }
-                }
-              }
-
-              td {
-                font-size: 12px;
-                color: #666;
-                padding: 6px 8px;
-                line-height: 18px;
-                text-align: left;
-                vertical-align: middle;
-                border: 1px solid #e6e6e6;
-
-                &.center {
-                  text-align: center;
-                }
-
-                .typographic {
-                  img {
-                    float: left;
-                    margin-right: 10px;
-                  }
-
-                  a {
-                    float: left;
-                    min-width: 80px;
-                    max-width: 250px;
-                    color: #e1251b;
-
-                    &.service {
-                      color: #666;
-                    }
-                  }
-
-                  span {
-                    float: left;
-                    min-width: 80px;
-                    max-width: 250px;
-                    text-align: center;
-                  }
-
-                }
-              }
-
+            span {
+              float: left;
+              min-width: 80px;
+              max-width: 250px;
+              text-align: center;
             }
+
           }
+        }
 
-          // 分页
-          .choose-order {
-            text-align: center;
+      }
+    }
 
-            .pagination {
-              margin: 38px 0;
+    // 分页
+    .choose-order {
+      text-align: center;
 
-              ul {
-                font-size: 0;
-                display: inline-block;
+      .pagination {
+        margin: 38px 0;
 
-                li {
-                  display: inline-block;
-                  padding: 4px 9px;
-                  font-size: 14px;
-                  border: 1px solid #e0e9ee;
+        ul {
+          font-size: 0;
+          display: inline-block;
 
-                  &.prev,
-                  &.next {
-                    background-color: #fafafa;
-                  }
+          li {
+            display: inline-block;
+            padding: 4px 9px;
+            font-size: 14px;
+            border: 1px solid #e0e9ee;
 
-                  &.prev {
-                    border-right-color: #28a3ef;
-                  }
+            &.prev,
+            &.next {
+              background-color: #fafafa;
+            }
 
-                  &.page {
-                    border-color: #28a3ef;
-                    border-left: 0;
+            &.prev {
+              border-right-color: #28a3ef;
+            }
 
-                    &.actived {
-                      background-color: #28a3ef;
+            &.page {
+              border-color: #28a3ef;
+              border-left: 0;
 
-                      a {
-                        color: #fff;
-                      }
+              &.actived {
+                background-color: #28a3ef;
 
-                    }
-                  }
+                a {
+                  color: #fff;
                 }
-              }
 
-              div {
-                display: inline-block;
-                font-size: 14px;
-                color: #333;
               }
             }
           }
         }
 
-        // 猜你喜欢
-        .like {
-          border: 1px solid #ddd;
-          margin: 15px 20px;
+        div {
+          display: inline-block;
+          font-size: 14px;
+          color: #333;
+        }
+      }
+    }
+  }
 
-          .kt {
-            border-bottom: 1px solid #ddd;
-            background: #f1f1f1;
-            color: #666;
-            margin: 0;
-            padding: 12px;
-            font-size: 15px;
+  // 猜你喜欢
+  .like {
+    border: 1px solid #ddd;
+    margin: 15px 20px;
+
+    .kt {
+      border-bottom: 1px solid #ddd;
+      background: #f1f1f1;
+      color: #666;
+      margin: 0;
+      padding: 12px;
+      font-size: 15px;
+    }
+
+    .like-list {
+      padding: 15px 11px;
+      overflow: hidden;
+
+      .likeItem {
+        width: 25%;
+        float: left;
+
+        .p-img {
+          text-align: left;
+
+          img {
+            width: 167px;
+            height: 123px;
           }
+        }
 
-          .like-list {
-            padding: 15px 11px;
-            overflow: hidden;
+        .attr {
+          padding: 0 15px;
+        }
 
-            .likeItem {
-              width: 25%;
-              float: left;
+        .price {
+          padding: 0 15px;
+          font-size: 16px;
+          color: #c81623;
+          margin-bottom: 20px;
+        }
 
-              .p-img {
-                text-align: left;
-
-                img {
-                  width: 167px;
-                  height: 123px;
-                }
-              }
-
-              .attr {
-                padding: 0 15px;
-              }
-
-              .price {
-                padding: 0 15px;
-                font-size: 16px;
-                color: #c81623;
-                margin-bottom: 20px;
-              }
-
-              .commit {
-                padding: 0 15px;
-              }
-            }
-          }
+        .commit {
+          padding: 0 15px;
         }
       }
     }

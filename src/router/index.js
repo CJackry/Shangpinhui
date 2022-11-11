@@ -38,7 +38,7 @@ let router = new VueRouter({
     // 配置路由
     routes,
     // eslint-disable-next-line no-unused-vars
-    scrollBehavior(to, from, savedPosition){
+    scrollBehavior(to, from, savedPosition) {
         //路由跳转的滚动条位置，y=0为最顶部
         return {y: 0}
     }
@@ -47,24 +47,35 @@ let router = new VueRouter({
 //前置守卫(路由跳转之前进行判断)
 // to: 跳转之后的路由 from: 发起跳转的原页面 next: 控制跳转,next()为放行,next(route)为放行到route
 router.beforeEach((to, from, next) => {
-    let routesForbidWithoutToken = ['login', 'register', 'pay', 'paySuccess'];
+    // 已登录后无法前往的页面
+    let routesForbidWithoutToken = ['login', 'register'];
+    // 未登录需要跳转到登录的页面
+    let routeNeedsLogin = ['Pay', 'paySuccess', 'ShopCart', 'myOrder', 'groupOrder', 'Trade'];
+    // 未登录需要跳转到登陆页面并待登陆后返回原页面
+    let routeNeedsLoginWithGoBack = ['ShopCart', 'myOrder', 'groupOrder', 'Trade']
     let token = getToken();
-    console.log(to, token);
     // 如果用户已登录
-    if(token){
-        if(routesForbidWithoutToken.find(route => route === to.name)){
+    if (token) {
+        if (routesForbidWithoutToken.find(route => route === to.name)) {
+            console.log('用户已登录，', to.name, '禁止访问');
             next('/home');
+
         }else{
             next();
         }
-    }else{
-        //如果用户未登录,访问购物车
-        if(to.name === 'ShopCart'){
+        //用户已登录
+    } else {
+        if (routeNeedsLogin.find(route => route === to.name)) {
+            console.log('用户未登录，', to.name, '跳转至登录页');
             next('/login');
-        }else{
-            next();
         }
     }
+// //如果用户跳转到了登录页，要是从特定路由（routeNeedsLoginWithGoBack）跳转来的，则登陆后跳转到原页面
+// if(to.name === 'login' && routeNeedsLoginWithGoBack.indexOf(from.name) !== -1){
+//     // eslint-disable-next-line no-debugger
+//     debugger;
+//     next(from.name);
+
 })
 
 export default router;

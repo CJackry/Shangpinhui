@@ -85,10 +85,12 @@ export const routes = [
             //children的path要么直接写路由名要么就要把完整路径写全
             //如要是写的是/myOrder,则跳转的时候会变成localhost:3000/#/myOrder
             {
+                name: 'myOrder',
                 path: 'myOrder',
                 component: myOrder
             },
             {
+                name: 'groupOrder',
                 path: 'groupOrder',
                 component: groupOrder
             },
