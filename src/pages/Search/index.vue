@@ -73,7 +73,7 @@
               </li>
             </ul>
           </div>
-          <Pagination :pageData='pageData' @pageInfo = 'pageInfo'/>
+          <PaginationDIY :pageData='pageData' @pageInfo = 'pageInfo'/>
         </div>
       </div>
     </div>

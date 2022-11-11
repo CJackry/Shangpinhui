@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: "Pagination",
+  name: "PaginationDIY",
   props: ['pageData'],
   computed: {
     totalPages() {

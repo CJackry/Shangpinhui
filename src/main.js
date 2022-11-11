@@ -7,12 +7,12 @@ import router from "@/router";
 import TypeNav from "@/components/TypeNav";
 //引入轮播图组件
 import Carousel from "@/components/Carousel";
-//引入分页器组件
-import Pagination from "@/components/Pagination";
+//引入分页器组件(自己写的)
+import PaginationDIY from "@/components/PaginationDIY";
 // 注册全局组件
 Vue.component(TypeNav.name, TypeNav);
 Vue.component(Carousel.name, Carousel);
-Vue.component(Pagination.name, Pagination);
+Vue.component(PaginationDIY.name, PaginationDIY);
 //引入仓库
 import store from "@/store";
 
@@ -30,11 +30,12 @@ import 'swiper/css/swiper.css'
 import * as API from './api'
 
 // 引入element-ui
-import { MessageBox, Message } from 'element-ui';
+import { MessageBox, Message, Pagination } from 'element-ui';
 
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$message = Message
 Vue.prototype.$alert = MessageBox.alert;
+Vue.use(Pagination);
 
 new Vue({
     render: h => h(App),
