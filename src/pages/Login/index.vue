@@ -80,7 +80,8 @@
         let {phone, password} = this;
         try{
           await this.$store.dispatch('sendLogin', {phone, password});
-          this.$router.push('home');
+          let toPath = this.$route.query.redirect || 'home';
+          this.$router.push(toPath);
         }catch (e) {
           alert(e);
         }

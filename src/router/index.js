@@ -52,11 +52,11 @@ router.beforeEach((to, from, next) => {
     // 未登录需要跳转到登录的页面
     let routeNeedsLogin = ['Pay', 'paySuccess', 'ShopCart', 'myOrder', 'groupOrder', 'Trade'];
     // 未登录需要跳转到登陆页面并待登陆后返回原页面
-    let routeNeedsLoginWithGoBack = ['ShopCart', 'myOrder', 'groupOrder', 'Trade']
+    let routeNeedsLoginWithGoBack = ['ShopCart', 'myOrder', 'groupOrder', 'Trade'];
     let token = getToken();
     // 如果用户已登录
     if (token) {
-        if (routesForbidWithoutToken.find(route => route === to.name)) {
+        if (routesForbidWithoutToken.indexOf(to.name)!==-1) {
             console.log('用户已登录，', to.name, '禁止访问');
             next('/home');
 
@@ -65,16 +65,16 @@ router.beforeEach((to, from, next) => {
         }
         //用户已登录
     } else {
-        if (routeNeedsLogin.find(route => route === to.name)) {
+        if (routeNeedsLogin.indexOf(to.name)!==-1) {
             console.log('用户未登录，', to.name, '跳转至登录页');
-            next('/login');
+            if(routeNeedsLoginWithGoBack.indexOf(to.name)!==-1)
+                next('/Login?redirect='+to.name);
+            else
+                next('/Login');
+        }else{
+            next();
         }
     }
-// //如果用户跳转到了登录页，要是从特定路由（routeNeedsLoginWithGoBack）跳转来的，则登陆后跳转到原页面
-// if(to.name === 'login' && routeNeedsLoginWithGoBack.indexOf(from.name) !== -1){
-//     // eslint-disable-next-line no-debugger
-//     debugger;
-//     next(from.name);
 
 })
 

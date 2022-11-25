@@ -76,7 +76,6 @@
           style="text-align: center"
           background
           layout="prev, pager, next"
-          current-page="currentPage"
           @current-change="handleCurrentChange"
           :total="totalPages">
       </el-pagination>
