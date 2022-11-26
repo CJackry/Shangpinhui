@@ -75,6 +75,14 @@ export const routes = [
         component: Trade,
         meta: {
             show: true
+        },
+        beforeEnter:(from, to, next)=>{
+            if(from.name === 'ShopCart'){
+                next();
+            }else{
+                // 页面加载会中断，即停留在跳转前的页面
+                next(false);
+            }
         }
     },
     {
@@ -110,6 +118,15 @@ export const routes = [
         component: Pay,
         meta: {
             show: true
+        },
+        //路由独享守卫
+        beforeEnter:(from, to, next)=>{
+            if(from.name === 'Trade'){
+                next();
+            }else{
+                // 页面加载会中断，即停留在跳转前的页面
+                next(false);
+            }
         }
     },
     {
@@ -118,6 +135,14 @@ export const routes = [
         component: PaySuccess,
         meta: {
             show: true
+        },
+        beforeEnter:(from, to, next)=>{
+            if(from.name === 'Pay'){
+                next();
+            }else{
+                // 页面加载会中断，即停留在跳转前的页面
+                next(false);
+            }
         }
     },
 

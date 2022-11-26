@@ -50,7 +50,7 @@ router.beforeEach((to, from, next) => {
     // 已登录后无法前往的页面
     let routesForbidWithoutToken = ['login', 'register'];
     // 未登录需要跳转到登录的页面
-    let routeNeedsLogin = ['Pay', 'paySuccess', 'ShopCart', 'myOrder', 'groupOrder', 'Trade'];
+    let routeNeedsLogin = ['ShopCart', 'myOrder', 'groupOrder', 'Trade'];
     // 未登录需要跳转到登陆页面并待登陆后返回原页面
     let routeNeedsLoginWithGoBack = ['ShopCart', 'myOrder', 'groupOrder', 'Trade'];
     let token = getToken();

@@ -62,7 +62,7 @@
           <i class="summoney">{{ allSum }}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" target="_blank">结算</a>
+          <a class="sum-btn" target="_blank" @click="submitPay">结算</a>
         </div>
       </div>
     </div>
@@ -141,6 +141,9 @@ export default {
         if(!flag) alert('你还未选择商品');
         else this.getData();
       }
+    },
+    submitPay(){
+      this.$router.push({name: 'Pay'});
     }
   },
   watch: {
