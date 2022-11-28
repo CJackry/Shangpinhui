@@ -12,57 +12,60 @@
         <div class="cart-th7">操作</div>
       </div>
       <div class="cart-body">
-        <ul class="cart-list" v-for="(good, index) in cartInfoList" :key="index">
+        <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.id">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" v-model="isChecked[index]">
+            <input type="checkbox" name="chk_list" id="" value="">
           </li>
           <li class="cart-list-con2">
-            <img :src="good.imgUrl" alt="">
-            <div class="item-msg">{{ good.skuName }}</div>
+            <div class="good-detail">
+              <img :src="cart.imgUrl">
+              <div class="item-msg">{{cart.skuName}}</div>
+            </div>
           </li>
           <li class="cart-list-con3">
-            <div class="item-txt">{{ goodAttr }}</div>
+            <div class="item-txt">墨绿色</div>
           </li>
           <li class="cart-list-con4">
-            <span class="price">{{ good.skuPrice }}</span>
+            <span class="price">{{cart.skuPrice}}.00</span>
           </li>
           <li class="cart-list-con5">
-            <button class="minus" @click="handlerNum('minus', good)">-</button>
-            <input autocomplete="off" type="text" :value="good.skuNum" class="itxt"
-                   @change="handlerNum('change', good, $event.target.value * 1)">
-            <a class="plus" @click="handlerNum('add', good)">+</a>
+            <div class="btn-num">
+              <a href="javascript:void(0)" class="mins" @click="changeNum('-', cart, -1)">-</a>
+              <input autocomplete="off" type="text" :value="cart.skuNum" minnum="1" class="itxt" @change="changeNum('change', cart, cart.skuNum)">
+              <a href="javascript:void(0)" class="plus" @click="changeNum('+', cart, 1)">+</a>
+            </div>
           </li>
           <li class="cart-list-con6">
-            <span class="sum">{{ good.cartPrice * good.skuNum }}</span>
+            <span class="sum">{{cart.skuPrice * cart.skuNum}}.00</span>
           </li>
           <li class="cart-list-con7">
-            <a class="sindelet" @click="deleteGood(good, index)">删除</a>
+            <a href="#none" class="sindelet">删除</a>
             <br>
-            <a>移到收藏</a>
+            <a href="#none">移到收藏</a>
           </li>
         </ul>
       </div>
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" @change="changeAllCheck" v-model="AllCheck">
+        <input class="chooseAll" type="checkbox">
         <span>全选</span>
       </div>
       <div class="option">
-        <a @click="deleteSelectGood">删除选中的商品</a>
-        <a>移到我的关注</a>
-        <a>清除下柜商品</a>
+        <a href="#none">删除选中的商品</a>
+        <a href="#none">移到我的关注</a>
+        <a href="#none">清除下柜商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>{{ chooseNum }}</span>件商品
+          <span>0</span>件商品
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">{{ allSum }}</i>
+          <i class="summoney">0</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" target="_blank" @click="submitPay">结算</a>
+          <a class="sum-btn" href="###" target="_blank">结算</a>
         </div>
       </div>
     </div>
@@ -70,110 +73,46 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from "vuex";
+import {mapState} from "vuex";
+import throttle from "lodash/throttle";
 
 export default {
   name: 'ShopCart',
   data() {
     return {
-      isChecked: [],
-      AllCheck: false,
-      goodAttr: sessionStorage.getItem('chooseAttr'),
+      isChecked: 1,
     }
   },
   mounted() {
     this.getData();
-    this.isChecked.length = 0;
-  },
-  methods: {
-    changeAllCheck() {
-      for (let i in this.isChecked) {
-        //使用$set进行响应式赋值，否则当isChecked的元素变化的时候不会更新页面
-        //（如点击全选但是总价不会更新，但是直接单击改变单选框值的时候属于是改变isChecked数组）
-        this.$set(this.isChecked, i, this.AllCheck);
-      }
-    },
-    //派发action
-    getData() {
-      this.$store.dispatch('getShopCartList');
-    },
-    sendUpdateNum(skuId, skuNum) {
-      this.$store.dispatch('sendUpdateShoppingCar', {skuId, skuNum});
-    },
-    sendDeleteGood(skuId){
-      this.$store.dispatch('deleteShopCart', skuId);
-    },
-    handlerNum(type, good, Num=0){
-      let disNum = 0;
-      switch (type){
-        case 'add':
-          disNum = 1;
-          break;
-        case 'minus':
-          disNum = good.skuNum > 1 ? -1 : 0;
-          break;
-        case 'change':
-          if(isNaN(disNum) || Num < 1)
-            disNum = 0;
-          else{
-            disNum = parseInt(Num) - good.skuNum;
-          }
-        }
-
-      if(disNum !== 0) this.sendUpdateNum(good.skuId, disNum);
-      this.getData()
-      },
-    deleteGood(good){
-      if(confirm('爱买买，不买滚')){
-        this.sendDeleteGood(good.skuId);
-        this.getData();
-      }
-    },
-    deleteSelectGood(){
-      if(confirm('确定要删除这些商品吗？')){
-        let flag = false;
-        for(let index in this.isChecked){
-          if(this.isChecked){
-            this.sendDeleteGood(this.cartInfoList[index].skuId);
-            flag = true;
-          }
-        }
-        if(!flag) alert('你还未选择商品');
-        else this.getData();
-      }
-    },
-    submitPay(){
-      this.$router.push({name: 'Pay'});
-    }
-  },
-  watch: {
-    isChecked(checkList) {
-      this.AllCheck = checkList.indexOf(false) === -1;
-    },
-    cartInfoList() {
-      console.log('cateInfoList changed');
-      //处理购物车商品选中状态的初始值
-      this.cartInfoList.forEach(() => this.isChecked.push(false));
-    }
   },
   computed: {
     ...mapState({
-      shopCartList: state => state.shopCart.ShopCartList,
+      ShopCartList: state => state.shopCart.ShopCartList,
     }),
-    ...mapGetters(['cartInfoList']),
-    chooseNum() {
-      return this.isChecked.filter(item => item === true).length;
-    },
-    allSum() {
-      let sum = 0;
-      let index = 0;
-      for (let good of this.cartInfoList) {
-        if (this.isChecked[index])
-          sum += good.cartPrice * good.skuNum;
-        index++;
-      }
-      return sum;
+    cartInfoList() {
+      return this.ShopCartList.cartInfoList;
     }
+  },
+  methods:{
+    getData(){
+      this.$store.dispatch('getShopCartList');
+    },
+    changeNum:throttle(function (type, cart, num){
+      switch(type){
+        case '+':
+          this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: num});
+          break;
+        case '-':
+          if(num > 1)
+            this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: num});
+          else if(cart.skuNum === 1)
+            if(confirm('确定删除该商品吗'))
+              this.$store.dispatch('deleteShopCart', cart.skuId);
+          break;
+      }
+      this.getData();
+    }, 500)
   }
 }
 </script>
@@ -190,8 +129,6 @@ export default {
   }
 
   .cart-main {
-    text-align: center;
-
     .cart-th {
       background: #f5f5f5;
       border: 1px solid #ddd;
@@ -203,7 +140,8 @@ export default {
       }
 
       .cart-th1 {
-        width: 4.1667%;
+        width: 5.5%;
+        text-align: center;
 
         input {
           vertical-align: middle;
@@ -215,19 +153,17 @@ export default {
       }
 
       .cart-th2 {
-        width: 25%;
+        width: 32%;
+        text-align: center;
       }
 
-      .cart-th3 {
-        width: 20.8333%;
-      }
-
+      .cart-th3,
       .cart-th4,
       .cart-th5,
       .cart-th6,
       .cart-th7 {
         width: 12.5%;
-
+        text-align: center;
       }
     }
 
@@ -245,28 +181,40 @@ export default {
         }
 
         .cart-list-con1 {
-          width: 4.1667%;
+          width: 5.5%;
+          text-align: center;
         }
 
         .cart-list-con2 {
-          width: 25%;
+          width: 32%;
+          text-align: center;
 
-          img {
-            width: 82px;
-            height: 82px;
-            float: left;
-          }
+          .good-detail {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: center;
+            justify-content: center;
 
-          .item-msg {
-            float: left;
-            width: 150px;
-            margin: 0 10px;
-            line-height: 18px;
+            img {
+              width: 82px;
+              height: 82px;
+              float: left;
+            }
+
+            .item-msg {
+              float: left;
+              width: 60%;
+              margin: 0 10px 10px;
+              line-height: 18px;
+            }
           }
         }
 
         .cart-list-con3 {
-          width: 20.8333%;
+          width: 12.5%;
+          text-align: center;
 
           .item-txt {
             text-align: center;
@@ -275,46 +223,54 @@ export default {
 
         .cart-list-con4 {
           width: 12.5%;
+          text-align: center;
 
         }
 
         .cart-list-con5 {
           width: 12.5%;
-          margin: 0 auto;
-          display: flex;
+          text-align: center;
 
-          .minus {
-            border: 1px solid #ddd;
-            border-right: 0;
-            float: left;
-            color: #666;
-            width: 6px;
+          .btn-num {
+            display: flex;
+            align-items: center;
             text-align: center;
-            padding: 8px;
+
+            .mins {
+              border: 1px solid #ddd;
+              border-right: 0;
+              float: left;
+              color: #666;
+              width: 6px;
+              text-align: center;
+              padding: 8px;
+            }
+
+            input {
+              border: 1px solid #ddd;
+              width: 40px;
+              height: 33px;
+              float: left;
+              text-align: center;
+              font-size: 14px;
+            }
+
+            .plus {
+              border: 1px solid #ddd;
+              border-left: 0;
+              float: left;
+              color: #666;
+              width: 6px;
+              text-align: center;
+              padding: 8px;
+            }
           }
 
-          input {
-            border: 1px solid #ddd;
-            width: 40px;
-            height: 33px;
-            float: left;
-            text-align: center;
-            font-size: 14px;
-          }
-
-          .plus {
-            border: 1px solid #ddd;
-            border-left: 0;
-            float: left;
-            color: #666;
-            width: 6px;
-            text-align: center;
-            padding: 8px;
-          }
         }
 
         .cart-list-con6 {
           width: 12.5%;
+          text-align: center;
 
           .sum {
             font-size: 16px;
@@ -323,6 +279,7 @@ export default {
 
         .cart-list-con7 {
           width: 12.5%;
+          text-align: center;
 
           a {
             color: #666;

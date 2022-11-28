@@ -11,9 +11,7 @@ const mutations = {
     },
 };
 const getters = {
-    cartInfoList(state){
-        return state.ShopCartList.cartInfoList||[];
-    }
+
 };
 const actions = {
     // eslint-disable-next-line no-unused-vars
