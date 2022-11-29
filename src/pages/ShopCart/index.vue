@@ -12,38 +12,44 @@
         <div class="cart-th7">操作</div>
       </div>
       <div class="cart-body">
-        <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.id">
-          <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" id="" value="">
-          </li>
-          <li class="cart-list-con2">
-            <div class="good-detail">
-              <img :src="cart.imgUrl">
-              <div class="item-msg">{{cart.skuName}}</div>
-            </div>
-          </li>
-          <li class="cart-list-con3">
-            <div class="item-txt">墨绿色</div>
-          </li>
-          <li class="cart-list-con4">
-            <span class="price">{{cart.skuPrice}}.00</span>
-          </li>
-          <li class="cart-list-con5">
-            <div class="btn-num">
-              <a href="javascript:void(0)" class="mins" @click="changeNum('-', cart, -1)">-</a>
-              <input autocomplete="off" type="text" :value="cart.skuNum" minnum="1" class="itxt" @change="changeNum('change', cart, cart.skuNum)">
-              <a href="javascript:void(0)" class="plus" @click="changeNum('+', cart, 1)">+</a>
-            </div>
-          </li>
-          <li class="cart-list-con6">
-            <span class="sum">{{cart.skuPrice * cart.skuNum}}.00</span>
-          </li>
-          <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
-            <br>
-            <a href="#none">移到收藏</a>
-          </li>
-        </ul>
+
+<!--        problem；页面一直不渲染商品列表，即获取到的isCartNull一直为true-->
+        <div v-if="!isCartNull">
+          <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.id" >
+            <li class="cart-list-con1">
+              <input type="checkbox" name="chk_list" id="" value="">
+            </li>
+            <li class="cart-list-con2">
+              <div class="good-detail">
+                <img :src="cart.imgUrl">
+                <div class="item-msg">{{ cart.skuName }}</div>
+              </div>
+            </li>
+            <li class="cart-list-con3">
+              <div class="item-txt">墨绿色</div>
+            </li>
+            <li class="cart-list-con4">
+              <span class="price">{{ cart.skuPrice }}.00</span>
+            </li>
+            <li class="cart-list-con5">
+              <div class="btn-num">
+                <a href="javascript:void(0)" class="mins" @click="changeNum('-', cart, -1)">-</a>
+                <input autocomplete="off" type="text" :value="cart.skuNum" minnum="1" class="itxt"
+                       @change="changeNum('change', cart, $event.target.value * 1)">
+                <a href="javascript:void(0)" class="plus" @click="changeNum('+', cart, 1)">+</a>
+              </div>
+            </li>
+            <li class="cart-list-con6">
+              <span class="sum">{{ cart.skuPrice * cart.skuNum }}.00</span>
+            </li>
+            <li class="cart-list-con7">
+              <a href="#none" class="sindelet" @click="delCart(cart.skuId)">删除</a>
+              <br>
+              <a href="#none">移到收藏</a>
+            </li>
+          </ul>
+        </div>
+        <div class="tip-add" v-else>你还尚未添加商品</div>
       </div>
     </div>
     <div class="cart-tool">
@@ -91,29 +97,69 @@ export default {
       ShopCartList: state => state.shopCart.ShopCartList,
     }),
     cartInfoList() {
-      return this.ShopCartList.cartInfoList;
-    }
-  },
-  methods:{
-    getData(){
-      this.$store.dispatch('getShopCartList');
+      if('cartInfoList' in this.ShopCartList)
+        return this.ShopCartList.cartInfoList;
+      else
+        return undefined;
     },
-    changeNum:throttle(function (type, cart, num){
-      switch(type){
-        case '+':
-          this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: num});
-          break;
-        case '-':
-          if(num > 1)
-            this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: num});
-          else if(cart.skuNum === 1)
-            if(confirm('确定删除该商品吗'))
-              this.$store.dispatch('deleteShopCart', cart.skuId);
-          break;
-      }
-      this.getData();
-    }, 500)
-  }
+    isCartNull() {
+      console.log(this.cartInfoList);
+      let isTrue = 'cartInfoList' in this.ShopCartList;
+      return !isTrue;
+    },
+  },
+    methods: {
+      getData() {
+        this.$store.dispatch('getShopCartList');
+      },
+      delCart(skuId) {
+        if (confirm('确定删除该商品吗')) {
+          this.$store.dispatch('deleteShopCart', skuId);
+          if (this.isCartNull) {
+            console.log('cartInfoList为空，重新跳转购物车页面');
+            this.$router.push('shopCart');
+          }
+        }
+      },
+      //节流，同时要注意async，否则修改后服务器还没返回数据，页面就不会更新，导致出现页面响应迟钝
+      changeNum: throttle(async function (type, cart, num) {
+        let isDel = false;
+        let disNum = 1;
+        switch (type) {
+          case '+':
+            disNum = 1;
+            break;
+          case '-':
+            if (cart.skuNum > 1) {
+              disNum = -1;
+            } else if (cart.skuNum === 1)
+              isDel = true;
+            break;
+          case 'change':
+            if (!isNaN(num)) {
+              // 如果输入的是0则删除
+              if(num===0)
+                isDel = true;
+              else
+                disNum = num - cart.skuNum;
+              //如果输入非数字则不做操作，即disNum为0
+            } else {
+              disNum = 0;
+            }
+        }
+        try {
+          if (isDel)
+            await this.delCart(cart.skuId);
+          //disNum不为0则发送修改请求
+          else if(disNum!==0)
+            await this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: disNum});
+          this.getData();
+        } catch (e) {
+          console.log('修改出错，', e.message);
+        }
+      }, 500),
+
+    }
 }
 </script>
 
@@ -285,6 +331,10 @@ export default {
             color: #666;
           }
         }
+      }
+      .tip-add{
+        padding: 10px;
+        text-align: center;
       }
     }
   }
