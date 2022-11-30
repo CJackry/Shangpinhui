@@ -17,10 +17,14 @@ export const reqUpdateShoppingCar = (skuId, skuNum) => requests({
 });
 //带参数的POST请求，params至少是个空对象，因此调用的时候一定要带上参数！！！
 export const reqSearchList = (params) => requests(({url: '/list', method: 'POST', data: params}));
+
 //获取购物车列表 /api/cart/cartList GET
 export const reqShopCartList = () => requests({url: '/cart/cartList', method: 'get'});
 //删除购物车商品 /api/cart/deleteCart/{skuId}
 export const reqDeleteShopCart = (skuId) => requests({url: `/cart/deleteCart/${skuId}`, method: 'delete'});
+//切换商品选中状态 /api/cart/checkCart/{skuID}/{isChecked} get
+export const reqChoose = (skuId, isChecked) => requests({url: `/cart/checkCart/${skuId}/${isChecked}`, method: 'get'});
+
 // 请求验证码 /api/user/passport/sendCode/{phone} get
 export const reqCode = (phone) => requests({url: `/user/passport/sendCode/${phone}`, method: 'get'});
 // 注册用户 /api/user/passport/user post

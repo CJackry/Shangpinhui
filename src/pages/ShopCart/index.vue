@@ -12,12 +12,12 @@
         <div class="cart-th7">操作</div>
       </div>
       <div class="cart-body">
-
-<!--        problem；页面一直不渲染商品列表，即获取到的isCartNull一直为true-->
+        <!--判断购物车内有没有商品-->
         <div v-if="!isCartNull">
-          <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.id" >
+          <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.id">
             <li class="cart-list-con1">
-              <input type="checkbox" name="chk_list" id="" value="">
+              <input type="checkbox" name="chk_list" id="" v-model="cart.isChecked"
+                     @change="changeCheck(cart.skuId, $event.target.checked)"/>
             </li>
             <li class="cart-list-con2">
               <div class="good-detail">
@@ -49,12 +49,16 @@
             </li>
           </ul>
         </div>
-        <div class="tip-add" v-else>你还尚未添加商品</div>
+        <!--没有商品则显示未添加商品-->
+        <div class="tip-add" v-else>
+          你还尚未添加商品，去
+          <router-link to="/home">首页</router-link>
+        </div>
       </div>
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox">
+        <input class="chooseAll" type="checkbox" v-model="isAllChecked" @change="allCheck">
         <span>全选</span>
       </div>
       <div class="option">
@@ -86,80 +90,102 @@ export default {
   name: 'ShopCart',
   data() {
     return {
-      isChecked: 1,
+      isAllChecked: true,
+      isCartNull: true,
     }
   },
   mounted() {
     this.getData();
+  },
+  watch: {
+    cartInfoList() {
+      //检查是否含有商品
+      console.log('检查cartInfoList');
+      this.isCartNull = !this.cartInfoList;
+      //检查是否全选
+      if (!this.isCartNull) {
+        this.cartInfoList.forEach(cart => {
+          if (!cart.isChecked) this.isAllChecked = false;
+        });
+      }
+    }
   },
   computed: {
     ...mapState({
       ShopCartList: state => state.shopCart.ShopCartList,
     }),
     cartInfoList() {
-      if('cartInfoList' in this.ShopCartList)
+      if (this.ShopCartList && 'cartInfoList' in this.ShopCartList)
         return this.ShopCartList.cartInfoList;
       else
         return undefined;
     },
-    isCartNull() {
-      console.log(this.cartInfoList);
-      let isTrue = 'cartInfoList' in this.ShopCartList;
-      return !isTrue;
-    },
   },
-    methods: {
-      getData() {
-        this.$store.dispatch('getShopCartList');
-      },
-      delCart(skuId) {
-        if (confirm('确定删除该商品吗')) {
-          this.$store.dispatch('deleteShopCart', skuId);
-          if (this.isCartNull) {
-            console.log('cartInfoList为空，重新跳转购物车页面');
-            this.$router.push('shopCart');
-          }
-        }
-      },
-      //节流，同时要注意async，否则修改后服务器还没返回数据，页面就不会更新，导致出现页面响应迟钝
-      changeNum: throttle(async function (type, cart, num) {
-        let isDel = false;
-        let disNum = 1;
-        switch (type) {
-          case '+':
-            disNum = 1;
-            break;
-          case '-':
-            if (cart.skuNum > 1) {
-              disNum = -1;
-            } else if (cart.skuNum === 1)
+  methods: {
+    getData() {
+      this.$store.dispatch('getShopCartList');
+    },
+    delCart(skuId) {
+      if (confirm('确定删除该商品吗')) {
+        this.$store.dispatch('deleteShopCart', skuId);
+        this.getData();
+      }
+    },
+    //节流，同时要注意async，否则修改后服务器还没返回数据，页面就不会更新，导致出现页面响应迟钝
+    changeNum: throttle(async function (type, cart, num) {
+      let isDel = false;
+      let disNum = 1;
+      switch (type) {
+        case '+':
+          disNum = 1;
+          break;
+        case '-':
+          if (cart.skuNum > 1) {
+            disNum = -1;
+          } else if (cart.skuNum === 1)
+            isDel = true;
+          break;
+        case 'change':
+          if (!isNaN(num)) {
+            // 如果输入的是0则删除
+            if (num === 0)
               isDel = true;
-            break;
-          case 'change':
-            if (!isNaN(num)) {
-              // 如果输入的是0则删除
-              if(num===0)
-                isDel = true;
-              else
-                disNum = num - cart.skuNum;
-              //如果输入非数字则不做操作，即disNum为0
-            } else {
-              disNum = 0;
-            }
-        }
-        try {
-          if (isDel)
-            await this.delCart(cart.skuId);
-          //disNum不为0则发送修改请求
-          else if(disNum!==0)
-            await this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: disNum});
-          this.getData();
-        } catch (e) {
-          console.log('修改出错，', e.message);
-        }
-      }, 500),
-
-    }
+            else
+              disNum = num - cart.skuNum;
+            //如果输入非数字则不做操作，即disNum为0
+          } else {
+            disNum = 0;
+          }
+      }
+      try {
+        if (isDel)
+          await this.delCart(cart.skuId);
+        //disNum不为0则发送修改请求
+        else if (disNum !== 0)
+          await this.$store.dispatch('updateShoppingCar', {skuId: cart.skuId, skuNum: disNum});
+        this.getData();
+      } catch (e) {
+        console.log('修改出错，', e.message);
+      }
+    }, 500),
+    async changeCheck(skuId, check) {
+      let isChecked = 1;
+      if (check) isChecked = 1;
+      else isChecked = 0;
+      await this.$store.dispatch('changeChoose', {skuId, isChecked});
+      this.getData();
+    },
+    async allCheck() {
+      let isChecked = 1;
+      if (this.isAllChecked) isChecked = 1;
+      else isChecked = 0;
+      for (let cart of this.cartInfoList) {
+        if (cart.isChecked !== isChecked)
+          await this.$store.dispatch('changeChoose', {skuId: cart.skuId, isChecked});
+      }
+      this.getData();
+    },
+  }
 }
 </script>
 
@@ -332,7 +358,8 @@ export default {
           }
         }
       }
-      .tip-add{
+
+      .tip-add {
         padding: 10px;
         text-align: center;
       }
