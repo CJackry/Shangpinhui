@@ -62,7 +62,7 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="chooseDel">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -185,6 +185,16 @@ export default {
       }
       this.getData();
     },
+    async chooseDel(){
+      await this.cartInfoList.forEach(cart => {
+        if(cart.isChecked){
+          if(confirm('确认删除这些商品吗')){
+            this.$store.dispatch('deleteShopCart', cart.skuId);
+          }
+        }
+      })
+      this.getData();
+    }
   }
 }
 </script>
