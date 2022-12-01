@@ -108,7 +108,8 @@ export default {
       payWay: 1,
       expressWay: 'sf',
       msg: '',
-      orderId: -1
+      orderId: -1,
+      chooseAddress: {}
     }
   },
   mounted() {
@@ -121,16 +122,14 @@ export default {
       userAddress: state => state.trade.userAddress
     }),
     ...mapGetters(['goodTradeList']),
-    // 用户选择的地址
-    chooseAddress() {
-      return this.userAddress.find(item => item.id === this.chooseId);
-    },
 
   },
   watch: {
     userAddress() {
       let defaultAddress = this.userAddress.find(item => item.isDefault === '1');
       this.chooseId = defaultAddress.id;
+      // 用户选择的地址
+      this.chooseAddress = this.userAddress.find(item => item.id === this.chooseId);
     },
     // goodTradeList() {
     //   // 订单商品总数

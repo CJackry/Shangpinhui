@@ -68,14 +68,14 @@
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>0</span>件商品
+          <span>{{ checkNum }}</span>件商品
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">0</i>
+          <i class="summoney">{{ allPrice }}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <router-link to="/trade" class="sum-btn">结算</router-link>
         </div>
       </div>
     </div>
@@ -120,6 +120,20 @@ export default {
       else
         return undefined;
     },
+    checkNum() {
+      let num = 0;
+      this.cartInfoList.forEach(cart => {
+        if (cart.isChecked) num++;
+      });
+      return num;
+    },
+    allPrice() {
+      let sum = 0;
+      this.cartInfoList.forEach(cart => {
+        if (cart.isChecked) sum += cart.skuPrice * cart.skuNum;
+      });
+      return sum;
+    }
   },
   methods: {
     getData() {
@@ -185,15 +199,18 @@ export default {
       }
       this.getData();
     },
-    async chooseDel(){
+    async chooseDel() {
       await this.cartInfoList.forEach(cart => {
-        if(cart.isChecked){
-          if(confirm('确认删除这些商品吗')){
+        if (cart.isChecked) {
+          if (confirm('确认删除这些商品吗')) {
             this.$store.dispatch('deleteShopCart', cart.skuId);
           }
         }
       })
       this.getData();
+    },
+    submitCart() {
+      this.$router.push('Trade');
     }
   }
 }

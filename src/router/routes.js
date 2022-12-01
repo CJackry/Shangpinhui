@@ -76,14 +76,15 @@ export const routes = [
         meta: {
             show: true
         },
-        beforeEnter:(from, to, next)=>{
-            if(from.name === 'ShopCart'){
-                next();
-            }else{
-                // 页面加载会中断，即停留在跳转前的页面
-                next(false);
-            }
-        }
+        // 记住顺序，（to, from, next），否则会出现值不对名！！！
+        // beforeEnter:(to, from, next)=>{
+        //     if(from.path === '/ShopCart'){
+        //         next();
+        //     }else{
+        //         // 页面加载会中断，即停留在跳转前的页面
+        //         next(false);
+        //     }
+        // }
     },
     {
         name: 'Center',
@@ -147,9 +148,8 @@ export const routes = [
     },
 
     //重定向
-
-    // {
-    //     path: '*',
-    //     redirect: '/home'
-    // }
+    {
+        path: '*',
+        redirect: '/home'
+    }
 ]
